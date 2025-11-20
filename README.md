@@ -20,7 +20,8 @@ cp .env.example .env
 Edite o `.env` e coloque seu token real da Digisac:
 
 ```env
-DIGISAC_BASE_URL=https://gxconsultoria.digisac.biz/api/v1
+DIGISAC_BASE_URL=https://gxconsultoria.digisac.biz
+DIGISAC_API_PREFIX=/api/v1 # opcional, deixe vazio se já embutiu o /api/v1 na URL base
 DIGISAC_TOKEN=SEU_TOKEN_AQUI
 PORT=3001
 ```
@@ -88,7 +89,39 @@ Exemplo - CSV bruto:
 curl "http://localhost:3001/historico-digisac/campanha/ID_DA_CAMPANHA/exportar?formataJson=false"
 ```
 
+### `GET /historico-digisac/tickets/estatisticas`
+
+Agrupa os tickets da Digisac para montar um dashboard de atendimento (clientes que
+mais chamaram, atendentes com mais tickets, totais abertos/fechados e distribuição).
+
+Parâmetros de query (todos opcionais):
+
+- `dataInicio`: filtra por `updatedAt` maior ou igual a esta data.
+- `dataFim`: filtra por `updatedAt` menor ou igual a esta data.
+- `serviceId`: limita a uma conexão específica.
+- `isOpen`: `true` ou `false` para filtrar por status.
+- `perPage`: quantidade de registros por página na API da Digisac (padrão 200).
+
+Exemplo:
+
+```bash
+curl "http://localhost:3001/historico-digisac/tickets/estatisticas?dataInicio=2024-01-01T00:00:00.000Z&dataFim=2024-01-31T23:59:59.000Z"
+```
+
 ---
 
 Depois de testar, você pode adaptar este projeto para salvar os dados em banco,
 integrar com painel, etc.
+
+## 5. Frontend com Vite/React
+
+Uma interface em Vite está disponível em `frontend/` para visualizar o dashboard.
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Configure a variável `VITE_API_URL` em um `.env` dentro de `frontend/` (padrão
+`http://localhost:3001`) caso o backend rode em outra porta ou host.
