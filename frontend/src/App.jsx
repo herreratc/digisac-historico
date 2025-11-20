@@ -60,6 +60,8 @@ function App() {
     return topAtendentes;
   }, [stats]);
 
+  const totalChamados = stats?.resumo.totalChamados ?? stats?.resumo.totalTickets;
+
   const carregarDados = async () => {
     setLoading(true);
     setError(null);
@@ -94,10 +96,10 @@ function App() {
             <p>Operação Digisac</p>
           </div>
           <h1>Histórico de atendimentos</h1>
-          <p className="hero__subtitle">Acompanhe a evolução dos tickets por período, serviço e status.</p>
+          <p className="hero__subtitle">Acompanhe a evolução dos chamados por período, serviço e status.</p>
           <div className="hero__meta">
             <span className="pill pill--solid">
-              {stats ? `${stats.totalRegistrosProcessados} registros processados` : 'Carregando dados...'}
+              {stats ? `${totalChamados || 0} chamados processados` : 'Carregando dados...'}
             </span>
             <span className="pill pill--ghost">{lastUpdated ? `Atualizado às ${lastUpdated.toLocaleTimeString('pt-BR')}` : 'Aguardando atualização'}</span>
           </div>
@@ -125,7 +127,7 @@ function App() {
         <section className="grid stats-grid">
           <StatCard
             label="Total de chamados"
-            value={formatNumber(stats?.resumo.totalTickets ?? '--')}
+            value={formatNumber(totalChamados ?? '--')}
             caption="Movimentações totais no período."
             highlight
           />
@@ -147,7 +149,7 @@ function App() {
         </section>
 
         <section className="grid insight-grid">
-          <InsightCard title="Saúde dos tickets" subtitle="Distribuição entre abertos e fechados">
+          <InsightCard title="Saúde dos chamados" subtitle="Distribuição entre abertos e fechados">
             {statusDistribuicao ? (
               <div className="insight-grid__content">
                 <DonutChart
@@ -159,11 +161,11 @@ function App() {
                 <div className="insight-grid__legend">
                   <div>
                     <p className="legend__label">Abertos</p>
-                    <p className="legend__value">{formatNumber(statusDistribuicao.abertos)} tickets</p>
+                    <p className="legend__value">{formatNumber(statusDistribuicao.abertos)} chamados</p>
                   </div>
                   <div>
                     <p className="legend__label">Fechados</p>
-                    <p className="legend__value">{formatNumber(statusDistribuicao.fechados)} tickets</p>
+                    <p className="legend__value">{formatNumber(statusDistribuicao.fechados)} chamados</p>
                   </div>
                 </div>
               </div>
@@ -172,7 +174,7 @@ function App() {
             )}
           </InsightCard>
 
-          <InsightCard title="Carga por atendente" subtitle="Top filas que mais receberam tickets">
+          <InsightCard title="Carga por atendente" subtitle="Top filas que mais receberam chamados">
             {cargaPorAtendente.length ? (
               <BarChart
                 data={cargaPorAtendente.map((item) => ({ label: item.nome, value: item.quantidade }))}
@@ -186,19 +188,19 @@ function App() {
 
         <section className="grid two-columns">
           <Leaderboard title="Clientes que mais chamaram" items={stats?.topClientes || []} descriptionKeys={["canal", "ultimoAtendimento"]} />
-          <Leaderboard title="Atendentes com mais tickets" items={stats?.atendentesComMaisAtendimentos || []} descriptionKeys={[]} />
+          <Leaderboard title="Atendentes com mais chamados" items={stats?.atendentesComMaisAtendimentos || []} descriptionKeys={[]} />
         </section>
 
         <section className="panel">
           <div className="panel__header">
             <div>
               <p className="eyebrow">Carga atual</p>
-              <h3>Distribuição de tickets por atendente</h3>
+              <h3>Distribuição de chamados por atendente</h3>
             </div>
             <span className="pill">{stats?.quantidadePorAtendente?.length || 0} pessoas na operação</span>
           </div>
           {stats?.quantidadePorAtendente?.length ? (
-            <div className="table" role="table" aria-label="Distribuição de tickets por atendente">
+            <div className="table" role="table" aria-label="Distribuição de chamados por atendente">
               <div className="table__row table__row--head" role="row">
                 <span role="columnheader">Atendente</span>
                 <span role="columnheader">Total</span>
@@ -211,7 +213,7 @@ function App() {
               ))}
             </div>
           ) : (
-            <p className="empty">Nenhum ticket retornado para os filtros selecionados.</p>
+            <p className="empty">Nenhum chamado retornado para os filtros selecionados.</p>
           )}
         </section>
       </main>
