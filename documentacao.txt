@@ -1,0 +1,1549 @@
+
+Public
+ENVIRONMENT
+No Environment
+LAYOUT
+Single Column
+LANGUAGE
+JavaScript - Fetch
+☁  Digisac  ‎‎☁
+Introduction
+⚙️ Gerais
+Acionamento flag no robô
+Agendamentos
+Agora
+Assuntos de chamado
+Auditoria de autenticação
+Autorização
+Avaliações
+Campanhas
+Campos personalizados
+Cargos
+Central de notificações
+Chamados
+Conexões
+Contatos
+Controle de ausência
+Créditos SMS
+Departamentos
+Distribuição de chamados
+Estatísticas de atendimento
+Estatísticas de avaliações
+Feriados
+Funil de vendas
+Grupos WhatsApp
+Histórico de chamados
+Integrações
+Idioma da plataforma
+Mensagens
+Mensagens interativas
+Meus dados
+Notificação
+Organizações
+Pessoas
+Planos
+Redefinir senha
+Respostas rápidas
+Robôs
+Tags
+Templates
+Termos de aceite
+Tokens
+Usuários
+Versões
+Webhooks
+WhatsApp
+🛠️ Populares
+Agora
+Autorização
+Chamados
+GET
+Buscar chamados do contato
+GET
+Buscar pelo contactid todos os chamados do cliente trazendo quem encerrou/transferiu
+POST
+Transferência de chamado
+POST
+Abertura de chamado
+POST
+Fechar chamado
+POST
+Fechar um chamado com assunto
+Contatos
+Estatísticas de atendimento
+Histórico de chamados
+Mensagens
+☁ Digisac ‎‎☁
+👋 Bem-vindo(a) à Documentação da API Digisac!
+Este material foi preparado com muito cuidado pela nossa equipe de Suporte Integração. Nosso objetivo é que ele seja útil para você! 🚀
+
+POST
+Iniciar conexão
+{{URL}}/api/v1/services/{{serviceId}}/start
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Example Request
+Iniciar conexão
+javascript
+var requestOptions = {
+  method: 'POST',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/services/{{serviceId}}/start", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Reiniciar conexão
+{{URL}}api/v1/services/{{serviceId}}/restart
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Example Request
+Reiniciar conexão
+javascript
+var requestOptions = {
+  method: 'POST',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}api/v1/services/{{serviceId}}/restart", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Busca de contatos que possuem X campos personalizados preenchidos
+{{URL}}/api/v1/contacts?query={"include":[{"model":"customFieldValues","include":[{"model":"customField","where":{"$or":[{"name":"{{customFieldName1}}"},{"name":"{{customFieldName2}}"},{"name":"{{customFieldName3}}"},{"name":"{{customFieldName4}}"}]}}]}]}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"include":[{"model":"customFieldValues","include":[{"model":"customField","where":{"$or":[{"name":"{{customFieldName1}}"},{"name":"{{customFieldName2}}"},{"name":"{{customFieldName3}}"},{"name":"{{customFieldName4}}"}]}}]}]}
+
+Example Request
+Busca de contatos que possuem X campos personalizados preenchidos
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts?query={\"include\":[{\"model\":\"customFieldValues\",\"include\":[{\"model\":\"customField\",\"where\":{\"$or\":[{\"name\":\"{{customFieldName1}}\"},{\"name\":\"{{customFieldName2}}\"},{\"name\":\"{{customFieldName3}}\"},{\"name\":\"{{customFieldName4}}\"}]}}]}]}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar contatos vinculados a Organização
+{{URL}}/api/v1/contacts?query={"include":[{"model":"person","required":"true","where":{"id":"{{organizationId}}"}}],"perPage":"30"}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"include":[{"model":"person","required":"true","where":{"id":"{{organizationId}}"}}],"perPage":"30"}
+
+Example Request
+Buscar contatos vinculados a Organização
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts?query={\"include\":[{\"model\":\"person\",\"required\":\"true\",\"where\":{\"id\":\"{{organizationId}}\"}}],\"perPage\":\"30\"}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+PUT
+Editar campo personalizado de um contato
+{{URL}}/api/v1/contacts/{{contactId}}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{
+    "customFields": [
+        {
+            "id": "{{customFieldsId}}",
+            "value": "{{texto}}"
+        }
+    ]
+}
+Example Request
+Editar campo personalizado de um contato
+View More
+javascript
+var raw = "{\r\n    \"customFields\": [\r\n        {\r\n            \"id\": \"{{customFieldsId}}\",\r\n            \"value\": \"{{texto}}\"\r\n        }\r\n    ]\r\n}";
+
+var requestOptions = {
+  method: 'PUT',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/{{contactId}}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+PUT
+Incluir tags em um contato existente
+{{URL}}/api/v1/contacts/{{contactId}}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{
+"tagIds": ["{{tagIds}}", "{{tagIds}}"] //id tag
+}
+Example Request
+Incluir tags em um contato existente
+View More
+javascript
+var raw = "{\n\"tagIds\": [\"{{tagIds}}\", \"{{tagIds}}\"] //id tag\n}";
+
+var requestOptions = {
+  method: 'PUT',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/{{contactId}}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Cadastrar contato
+{{URL}}/api/v1/contacts
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+View More
+json
+{
+"internalName": "{{name}}",
+"number": "{{number}}", //número contato
+"serviceId": "{{serviceid}}", //id conexão
+"defaultDepartmentId": null,
+"tagIds": ["{{tagIds}}"], //id tag
+"customFields": [ //campos personalizados
+        {
+            "id": "{{customFieldId}}", //id campo personalizado
+            "value": "{{value}}" //texto
+        }
+]
+}
+
+Example Request
+Cadastrar contato
+View More
+javascript
+var raw = "{\r\n\"internalName\": \"{{name}}\",\r\n\"number\": \"{{number}}\", //número contato\r\n\"serviceId\": \"{{serviceid}}\", //id conexão\r\n\"defaultDepartmentId\": null,\r\n\"tagIds\": [\"{{tagIds}}\"], //id tag\r\n\"customFields\": [ //campos personalizados\r\n        {\r\n            \"id\": \"{{customFieldId}}\", //id campo personalizado\r\n            \"value\": \"{{value}}\" //texto\r\n        }\r\n]\r\n}\r\n\r\n";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Cadastrar múltiplos contatos
+{{URL}}/api/v1/contacts/many
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+View More
+json
+[
+    {
+        "internalName": "{{name}}", //Nome do contato
+        "number": "{{number}}", //Número do contato
+        "serviceId": "{{serviceid}}", //ID da conexão
+        "defaultDepartmentId": null,
+        "tagIds": [
+            "{{tagIds}}" //ID da TAG
+        ]
+    },
+    {
+        "internalName": "{{name}}",
+        "number": "{{number}}",
+        "serviceId": "{{serviceid}}",
+        "defaultDepartmentId": null,
+        "tagIds": [
+            "{{tagIds}}"
+        ]
+    }
+]
+Example Request
+Cadastrar múltiplos contatos
+View More
+javascript
+var raw = "[\r\n    {\r\n        \"internalName\": \"{{name}}\", //Nome do contato\r\n        \"number\": \"{{number}}\", //Número do contato\r\n        \"serviceId\": \"{{serviceid}}\", //ID da conexão\r\n        \"defaultDepartmentId\": null,\r\n        \"tagIds\": [\r\n            \"{{tagIds}}\" //ID da TAG\r\n        ]\r\n    },\r\n    {\r\n        \"internalName\": \"{{name}}\",\r\n        \"number\": \"{{number}}\",\r\n        \"serviceId\": \"{{serviceid}}\",\r\n        \"defaultDepartmentId\": null,\r\n        \"tagIds\": [\r\n            \"{{tagIds}}\"\r\n        ]\r\n    }\r\n]";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/many", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Exportar contatos
+{{URL}}/api/v1/contacts/export/csv
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+View More
+json
+{
+  "where": {
+    "visible": true,
+    "isGroup": {
+      "$eq": false
+    },
+    "isBroadcast": {
+      "$eq": false
+    },
+    "serviceId": "{{serviceId}}" //id conexão
+  },
+  "include": [
+    "avatar",
+    "tags",
+    {
+      "model": "service",
+      "required": true
+    },
+    "person"
+  ],
+  "order": [
+    [
+      "name",
+      "ASC"
+    ]
+  ],
+  "page": 1,
+  "perPage": 15,
+  "type": "comma",
+  "serviceType": "whatsapp" //tipo de conexão (e-mail, telegram, etc)
+}
+Example Request
+Exportar contatos
+View More
+javascript
+var raw = "{\r\n  \"where\": {\r\n    \"visible\": true,\r\n    \"isGroup\": {\r\n      \"$eq\": false\r\n    },\r\n    \"isBroadcast\": {\r\n      \"$eq\": false\r\n    },\r\n    \"serviceId\": \"{{serviceId}}\" //id conexão\r\n  },\r\n  \"include\": [\r\n    \"avatar\",\r\n    \"tags\",\r\n    {\r\n      \"model\": \"service\",\r\n      \"required\": true\r\n    },\r\n    \"person\"\r\n  ],\r\n  \"order\": [\r\n    [\r\n      \"name\",\r\n      \"ASC\"\r\n    ]\r\n  ],\r\n  \"page\": 1,\r\n  \"perPage\": 15,\r\n  \"type\": \"comma\",\r\n  \"serviceType\": \"whatsapp\" //tipo de conexão (e-mail, telegram, etc)\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/export/csv", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Desbloquear contato
+{{URL}}/api/v1/contacts/{{contactId}}/block
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{
+    "block": false,
+    "description": "{{description}}" //descrição (texto explicando o motivo)
+}
+Example Request
+Desbloquear contato
+View More
+javascript
+var raw = "{\r\n    \"block\": false,\r\n    \"description\": \"{{description}}\" //descrição (texto explicando o motivo)\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/{{contactId}}/block", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+DELETE
+Excluir contato
+{{URL}}/api/v1/contacts/{{contactId}}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Example Request
+Excluir contato
+javascript
+var requestOptions = {
+  method: 'DELETE',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/{{contactId}}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Atribuir cargo de administrador
+{{URL}}/api/v1/contacts/{{contactId}}/promote-members
+AUTHORIZATION
+Bearer Token
+Token
+{{Token}}
+
+Body
+raw (json)
+json
+[
+    "{{contactId}}" // id do contato de quem será promovido a administrador
+] 
+Example Request
+Atribuir cargo de administrador
+View More
+javascript
+var raw = "[\n    \"{{contactId}}\" // id do contato de quem será promovido a administrador\n] ";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/{{contactId}}/promote-members", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Criar novo grupo
+{{URL}}/api/v1/contacts
+AUTHORIZATION
+Bearer Token
+Token
+{{Token}}
+
+Body
+raw (json)
+json
+{
+  "serviceId": "{{serviceId}}", // id da conexão
+  "internalName": "{{groupName}}", // nome do grupo
+  "isGroup": true
+}
+Example Request
+Criar novo grupo
+View More
+javascript
+var raw = "{\n  \"serviceId\": \"{{serviceId}}\", // id da conexão\n  \"internalName\": \"{{groupName}}\", // nome do grupo\n  \"isGroup\": true\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar chamados abertos por departamento
+{{URL}}/api/v1/tickets?query={"where":{"isOpen":true,"departmentId":"{{departmentId}}"},"include":[{"model":"contact","required":true,"where":{"visible":true}}],"order":[["updatedAt","DESC"]],"page":1,"perPage":15}
+AUTHORIZATION
+Bearer Token
+Token
+{{Token}}
+
+PARAMS
+query
+{"where":{"isOpen":true,"departmentId":"{{departmentId}}"},"include":[{"model":"contact","required":true,"where":{"visible":true}}],"order":[["updatedAt","DESC"]],"page":1,"perPage":15}
+
+Example Request
+Buscar chamados abertos por departamento
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets?query={\"where\":{\"isOpen\":true,\"departmentId\":\"{{departmentId}}\"},\"include\":[{\"model\":\"contact\",\"required\":true,\"where\":{\"visible\":true}}],\"order\":[[\"updatedAt\",\"DESC\"]],\"page\":1,\"perPage\":15}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar por um chamado específico
+{{URL}}/api/v1/tickets/{{ticketId}}?include[0][model]=contact&include[0][include][0]=avatar&include[0][include][1]=thumbAvatar&include[1]=department&include[2]=user&include[3]=ticketTopics
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+include[0][model]
+contact
+
+include[0][include][0]
+avatar
+
+include[0][include][1]
+thumbAvatar
+
+include[1]
+department
+
+include[2]
+user
+
+include[3]
+ticketTopics
+
+Example Request
+Buscar por um chamado específico
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets/{{ticketId}}?include[0][model]=contact&include[0][include][0]=avatar&include[0][include][1]=thumbAvatar&include[1]=department&include[2]=user&include[3]=ticketTopics", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar chamados por período
+{{URL}}/api/v1/tickets?startPeriod={{2024-01-01T23:59:59.999Z}}&endPeriod={{2023-01-02T23:59:59.999Z}}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+startPeriod
+{{2024-01-01T23:59:59.999Z}}
+
+endPeriod
+{{2023-01-02T23:59:59.999Z}}
+
+Example Request
+Buscar chamados por período
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets?startPeriod={{2024-01-01T23:59:59.999Z}}&endPeriod={{2023-01-02T23:59:59.999Z}}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar chamados abertos + fechados por conexão
+{{URL}}/api/v1/tickets?query={"distinct":true,"order":[["updatedAt","DESC"]],"where":{"isOpen":{"$in":[true,false]}},"include":[{"model":"contact","attributes":["name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true,"serviceId":"{{serviceId}}"},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true}]}],"page":1,"perPage":20}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"distinct":true,"order":[["updatedAt","DESC"]],"where":{"isOpen":{"$in":[true,false]}},"include":[{"model":"contact","attributes":["name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true,"serviceId":"{{serviceId}}"},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true}]}],"page":1,"perPage":20}
+
+Example Request
+Buscar chamados abertos + fechados por conexão
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets?query={\"distinct\":true,\"order\":[[\"updatedAt\",\"DESC\"]],\"where\":{\"isOpen\":{\"$in\":[true,false]}},\"include\":[{\"model\":\"contact\",\"attributes\":[\"name\",\"alternativeName\",\"internalName\",\"serviceId\",\"data\",\"note\",\"personId\",\"status\"],\"required\":true,\"where\":{\"visible\":true,\"serviceId\":\"{{serviceId}}\"},\"include\":[{\"model\":\"service\",\"attributes\":[\"id\",\"name\",\"type\",\"accountId\",\"botId\",\"archivedAt\"],\"required\":true}]}],\"page\":1,\"perPage\":20}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar todos os chamados da plataforma
+{{URL}}/api/v1/tickets?query={"distinct":true,"order":[["updatedAt","DESC"]],"where":{},"include":[{"model":"account"},{"model":"firstMessage","attributes":["id","type","text","timestamp","isFromMe","sent","data","accountId","serviceId","contactId","fromId","toId","userId","ticketId","isFromBot","isFromSync","visible","ticketUserId","ticketDepartmentId","origin","botId","campaignId"]},{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true},{"model":"tags","attributes":["id","label","accountId"]},{"model":"person","attributes":["id","name","document","accountId"]},{"model":"thumbAvatar"}]},{"model":"user","attributes":["id","name","email","isSuperAdmin","active","accountId","isFirstLogin","status","timetableId","archivedAt","phoneNumber","data","language","isActiveInternalChat"]},{"model":"department","attributes":["id","name","accountId","archivedAt","distributionId"]},{"model":"ticketTopics","attributes":["id","name","archivedAt"]}]}&perPage=30
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"distinct":true,"order":[["updatedAt","DESC"]],"where":{},"include":[{"model":"account"},{"model":"firstMessage","attributes":["id","type","text","timestamp","isFromMe","sent","data","accountId","serviceId","contactId","fromId","toId","userId","ticketId","isFromBot","isFromSync","visible","ticketUserId","ticketDepartmentId","origin","botId","campaignId"]},{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true},{"model":"tags","attributes":["id","label","accountId"]},{"model":"person","attributes":["id","name","document","accountId"]},{"model":"thumbAvatar"}]},{"model":"user","attributes":["id","name","email","isSuperAdmin","active","accountId","isFirstLogin","status","timetableId","archivedAt","phoneNumber","data","language","isActiveInternalChat"]},{"model":"department","attributes":["id","name","accountId","archivedAt","distributionId"]},{"model":"ticketTopics","attributes":["id","name","archivedAt"]}]}
+
+perPage
+30
+
+Example Request
+Buscar todos os chamados da plataforma
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets?query={\"distinct\":true,\"order\":[[\"updatedAt\",\"DESC\"]],\"where\":{},\"include\":[{\"model\":\"account\"},{\"model\":\"firstMessage\",\"attributes\":[\"id\",\"type\",\"text\",\"timestamp\",\"isFromMe\",\"sent\",\"data\",\"accountId\",\"serviceId\",\"contactId\",\"fromId\",\"toId\",\"userId\",\"ticketId\",\"isFromBot\",\"isFromSync\",\"visible\",\"ticketUserId\",\"ticketDepartmentId\",\"origin\",\"botId\",\"campaignId\"]},{\"model\":\"contact\",\"attributes\":[\"id\",\"accountId\",\"name\",\"alternativeName\",\"internalName\",\"serviceId\",\"data\",\"note\",\"personId\",\"status\"],\"required\":true,\"where\":{\"visible\":true},\"include\":[{\"model\":\"service\",\"attributes\":[\"id\",\"name\",\"type\",\"accountId\",\"botId\",\"archivedAt\"],\"required\":true},{\"model\":\"tags\",\"attributes\":[\"id\",\"label\",\"accountId\"]},{\"model\":\"person\",\"attributes\":[\"id\",\"name\",\"document\",\"accountId\"]},{\"model\":\"thumbAvatar\"}]},{\"model\":\"user\",\"attributes\":[\"id\",\"name\",\"email\",\"isSuperAdmin\",\"active\",\"accountId\",\"isFirstLogin\",\"status\",\"timetableId\",\"archivedAt\",\"phoneNumber\",\"data\",\"language\",\"isActiveInternalChat\"]},{\"model\":\"department\",\"attributes\":[\"id\",\"name\",\"accountId\",\"archivedAt\",\"distributionId\"]},{\"model\":\"ticketTopics\",\"attributes\":[\"id\",\"name\",\"archivedAt\"]}]}&perPage=30", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Exportar histórico de chamados em PDF
+{{URL}}/pdf/tickets/{{ticketId}}/pt-BR?pdf=1&lng=pt-BR
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+pdf
+1
+
+lng
+pt-BR
+
+Example Request
+Exportar histórico de chamados em PDF
+View More
+javascript
+var raw = "";
+
+var requestOptions = {
+  method: 'GET',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/pdf/tickets/{{ticketId}}/pt-BR?pdf=1&lng=pt-BR", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Exportar histórico de chamados em TXT
+{{URL}}/api/v1/tickets/export
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+HEADERS
+Content-Type
+application/json
+
+Body
+raw (json)
+json
+{
+    "protocol": "{{protocolNumber}}" //Número do protocolo
+}
+Example Request
+Exportar histórico de chamados em TXT
+View More
+javascript
+var myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+var raw = "{\n    \"protocol\": \"{{protocolNumber}}\" //Número do protocolo\n}";
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets/export", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Exportar histórico de chamados em CSV
+{{URL}}/api/v1/tickets/export-history?query={"distinct":true,"order":[["updatedAt","DESC"]],"where":{},"include":[{"model":"firstMessage","attributes":["id","type","text","timestamp","isFromMe","sent","data","accountId","serviceId","contactId","fromId","toId","userId","ticketId","isFromBot","isFromSync","visible","ticketUserId","ticketDepartmentId","origin","botId","campaignId"]},{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true},{"model":"tags","attributes":["id","label","accountId"]},{"model":"person","attributes":["id","name","document","accountId"]}]},{"model":"user","attributes":["id","name","email","isSuperAdmin","active","accountId","isFirstLogin","status","timetableId","archivedAt","phoneNumber","data","language","isActiveInternalChat"]},{"model":"department","attributes":["id","name","accountId","archivedAt","distributionId"]},{"model":"ticketTopics","attributes":["id","name","archivedAt"]}]}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"distinct":true,"order":[["updatedAt","DESC"]],"where":{},"include":[{"model":"firstMessage","attributes":["id","type","text","timestamp","isFromMe","sent","data","accountId","serviceId","contactId","fromId","toId","userId","ticketId","isFromBot","isFromSync","visible","ticketUserId","ticketDepartmentId","origin","botId","campaignId"]},{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true},{"model":"tags","attributes":["id","label","accountId"]},{"model":"person","attributes":["id","name","document","accountId"]}]},{"model":"user","attributes":["id","name","email","isSuperAdmin","active","accountId","isFirstLogin","status","timetableId","archivedAt","phoneNumber","data","language","isActiveInternalChat"]},{"model":"department","attributes":["id","name","accountId","archivedAt","distributionId"]},{"model":"ticketTopics","attributes":["id","name","archivedAt"]}]}
+
+Example Request
+Exportar histórico de chamados em CSV
+View More
+javascript
+var requestOptions = {
+  method: 'POST',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets/export-history?query={\"distinct\":true,\"order\":[[\"updatedAt\",\"DESC\"]],\"where\":{},\"include\":[{\"model\":\"firstMessage\",\"attributes\":[\"id\",\"type\",\"text\",\"timestamp\",\"isFromMe\",\"sent\",\"data\",\"accountId\",\"serviceId\",\"contactId\",\"fromId\",\"toId\",\"userId\",\"ticketId\",\"isFromBot\",\"isFromSync\",\"visible\",\"ticketUserId\",\"ticketDepartmentId\",\"origin\",\"botId\",\"campaignId\"]},{\"model\":\"contact\",\"attributes\":[\"id\",\"accountId\",\"name\",\"alternativeName\",\"internalName\",\"serviceId\",\"data\",\"note\",\"personId\",\"status\"],\"required\":true,\"where\":{\"visible\":true},\"include\":[{\"model\":\"service\",\"attributes\":[\"id\",\"name\",\"type\",\"accountId\",\"botId\",\"archivedAt\"],\"required\":true},{\"model\":\"tags\",\"attributes\":[\"id\",\"label\",\"accountId\"]},{\"model\":\"person\",\"attributes\":[\"id\",\"name\",\"document\",\"accountId\"]}]},{\"model\":\"user\",\"attributes\":[\"id\",\"name\",\"email\",\"isSuperAdmin\",\"active\",\"accountId\",\"isFirstLogin\",\"status\",\"timetableId\",\"archivedAt\",\"phoneNumber\",\"data\",\"language\",\"isActiveInternalChat\"]},{\"model\":\"department\",\"attributes\":[\"id\",\"name\",\"accountId\",\"archivedAt\",\"distributionId\"]},{\"model\":\"ticketTopics\",\"attributes\":[\"id\",\"name\",\"archivedAt\"]}]}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Exportar histórico de chamados de uma conexão específica em CSV
+{{URL}}/api/v1/tickets/export-history?query={"distinct":true,"order":[["updatedAt","DESC"]],"where":{},"include":[{"model":"firstMessage","attributes":["id","type","text","timestamp","isFromMe","sent","data","accountId","serviceId","contactId","fromId","toId","userId","ticketId","isFromBot","isFromSync","visible","ticketUserId","ticketDepartmentId","origin","botId","campaignId"]},{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true,"serviceId":"{{servieId}}"},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true},{"model":"tags","attributes":["id","label","accountId"]},{"model":"person","attributes":["id","name","document","accountId"]}]},{"model":"user","attributes":["id","name","email","isSuperAdmin","active","accountId","isFirstLogin","status","timetableId","archivedAt","phoneNumber","data","language","isActiveInternalChat"]},{"model":"department","attributes":["id","name","accountId","archivedAt","distributionId"]},{"model":"ticketTopics","attributes":["id","name","archivedAt"]}]}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"distinct":true,"order":[["updatedAt","DESC"]],"where":{},"include":[{"model":"firstMessage","attributes":["id","type","text","timestamp","isFromMe","sent","data","accountId","serviceId","contactId","fromId","toId","userId","ticketId","isFromBot","isFromSync","visible","ticketUserId","ticketDepartmentId","origin","botId","campaignId"]},{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true,"serviceId":"{{servieId}}"},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true},{"model":"tags","attributes":["id","label","accountId"]},{"model":"person","attributes":["id","name","document","accountId"]}]},{"model":"user","attributes":["id","name","email","isSuperAdmin","active","accountId","isFirstLogin","status","timetableId","archivedAt","phoneNumber","data","language","isActiveInternalChat"]},{"model":"department","attributes":["id","name","accountId","archivedAt","distributionId"]},{"model":"ticketTopics","attributes":["id","name","archivedAt"]}]}
+
+Example Request
+Exportar histórico de chamados de uma conexão específica em CSV
+View More
+javascript
+var requestOptions = {
+  method: 'POST',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets/export-history?query={\"distinct\":true,\"order\":[[\"updatedAt\",\"DESC\"]],\"where\":{},\"include\":[{\"model\":\"firstMessage\",\"attributes\":[\"id\",\"type\",\"text\",\"timestamp\",\"isFromMe\",\"sent\",\"data\",\"accountId\",\"serviceId\",\"contactId\",\"fromId\",\"toId\",\"userId\",\"ticketId\",\"isFromBot\",\"isFromSync\",\"visible\",\"ticketUserId\",\"ticketDepartmentId\",\"origin\",\"botId\",\"campaignId\"]},{\"model\":\"contact\",\"attributes\":[\"id\",\"accountId\",\"name\",\"alternativeName\",\"internalName\",\"serviceId\",\"data\",\"note\",\"personId\",\"status\"],\"required\":true,\"where\":{\"visible\":true,\"serviceId\":\"{{servieId}}\"},\"include\":[{\"model\":\"service\",\"attributes\":[\"id\",\"name\",\"type\",\"accountId\",\"botId\",\"archivedAt\"],\"required\":true},{\"model\":\"tags\",\"attributes\":[\"id\",\"label\",\"accountId\"]},{\"model\":\"person\",\"attributes\":[\"id\",\"name\",\"document\",\"accountId\"]}]},{\"model\":\"user\",\"attributes\":[\"id\",\"name\",\"email\",\"isSuperAdmin\",\"active\",\"accountId\",\"isFirstLogin\",\"status\",\"timetableId\",\"archivedAt\",\"phoneNumber\",\"data\",\"language\",\"isActiveInternalChat\"]},{\"model\":\"department\",\"attributes\":[\"id\",\"name\",\"accountId\",\"archivedAt\",\"distributionId\"]},{\"model\":\"ticketTopics\",\"attributes\":[\"id\",\"name\",\"archivedAt\"]}]}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+Integrações
+A função de integrações tem como objetivo incorporar algum site dentro da plataforma Digisac. Com esta função, o usuário conseguirá acessar o site integrado sem precisar sair da própria plataforma.
+
+AUTHORIZATION
+Bearer Token
+This folder is using Bearer Token from folder⚙️ Gerais
+GET
+Listar integrações
+{{URL}}/api/v1/integrations?perPage=40
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+perPage
+40
+
+Example Request
+Listar integrações
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/integrations?perPage=40", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Criar webhook
+{{URL}}/api/v1/me/webhooks
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+View More
+json
+{
+    "active": {{true or falsze}},
+    "name": "{{name}}",
+    "url": "{{url}}",
+    "events": [
+        "{{message.created}}",
+        "{{message.updated}}"
+    ],
+    "type": "{{general}}",
+    "userId": "{{userId}}",
+    "accountId": "{{accountId}}"
+}
+Example Request
+Criar webhook
+View More
+javascript
+var raw = "{\r\n    \"active\": {{true or falsze}},\r\n    \"name\": \"{{name}}\",\r\n    \"url\": \"{{url}}\",\r\n    \"events\": [\r\n        \"{{message.created}}\",\r\n        \"{{message.updated}}\"\r\n    ],\r\n    \"type\": \"{{general}}\",\r\n    \"userId\": \"{{userId}}\",\r\n    \"accountId\": \"{{accountId}}\"\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/me/webhooks", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Teste Webhook
+{{link_Completo_Webhook}}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{ 
+    "teste": "teste" 
+}
+Example Request
+Teste Webhook
+View More
+javascript
+var raw = "{ \r\n    \"teste\": \"teste\" \r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{link_Completo_Webhook}}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+WhatsApp
+AUTHORIZATION
+Bearer Token
+This folder is using Bearer Token from folder⚙️ Gerais
+GET
+Validação WhatsApp
+{{URL}}/api/v1/contacts/exists?numbers[]={{contactNumber}}&serviceId={{serviceId}}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+numbers[]
+{{contactNumber}}
+
+serviceId
+{{serviceId}}
+
+Example Request
+Validação WhatsApp
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/exists?numbers[]={{contactNumber}}&serviceId={{serviceId}}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar atendentes (Agora)
+{{URL}}/api/v1/now/attendance-resume
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Example Request
+Buscar atendentes (Agora)
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/now/attendance-resume", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar todos os dados (Agora)
+{{URL}}/api/v1/now/resume
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Example Request
+Buscar todos os dados (Agora)
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/now/resume", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+Autorização
+Gerar o Token de acesso em sua plataforma.
+
+AUTHORIZATION
+Bearer Token
+This folder is using Bearer Token from folder🛠️ Populares
+POST
+Gerar Token de acesso
+{{URL}}/api/v1/oauth/token
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{
+    "grant_type": "password",
+    "client_id": "api",
+    "client_secret": "secret",
+    "username": "{{e-mail}}", //e-mail de login do usuário
+    "password": "{{password}}" //senha de login do usuário
+}
+Example Request
+Gerar Token de acesso
+View More
+javascript
+var raw = "{\r\n    \"grant_type\": \"password\",\r\n    \"client_id\": \"api\",\r\n    \"client_secret\": \"secret\",\r\n    \"username\": \"{{e-mail}}\", //e-mail de login do usuário\r\n    \"password\": \"{{password}}\" //senha de login do usuário\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/oauth/token", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Abertura de chamado
+{{URL}}/contacts/{{contactId}}/ticket/transfer
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{
+    "departmentId": "{{departmentId}}", //id departamento
+    "userId": "{{userId}}", //id do usuário SE for abrir direto para ele
+    "comments": "{{comments}}" //comentario interno
+}
+Example Request
+Abertura de chamado
+View More
+javascript
+var raw = "{\r\n    \"departmentId\": \"{{departmentId}}\", //id departamento\r\n    \"userId\": \"{{userId}}\", //id do usuário SE for abrir direto para ele\r\n    \"comments\": \"{{comments}}\" //comentario interno\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/contacts/{{contactId}}/ticket/transfer", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Fechar chamado
+{{URL}}/api/v1/contacts/{{contactId}}/ticket/close
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Example Request
+Fechar chamado
+View More
+javascript
+var raw = "";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/contacts/{{contactId}}/ticket/close", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar estatísticas por usuário
+{{URL}}/api/v1/dashboard/general?startPeriod={{2024-07-01T23:59:59.999Z}}&endPeriod={{2024-07-30T23:59:59.999Z}}&userId={{userId}}
+AUTHORIZATION
+Bearer Token
+This request is using Bearer Token from folder🛠️ Populares
+PARAMS
+startPeriod
+{{2024-07-01T23:59:59.999Z}}
+
+endPeriod
+{{2024-07-30T23:59:59.999Z}}
+
+userId
+{{userId}}
+
+Example Request
+Buscar estatísticas por usuário
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/dashboard/general?startPeriod={{2024-07-01T23:59:59.999Z}}&endPeriod={{2024-07-30T23:59:59.999Z}}&userId={{userId}}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar estatísticas por departamento + usuário
+{{URL}}/api/v1/dashboard/general?startPeriod={{2024-07-01T23:59:59.999Z}}&endPeriod={{2024-07-30T23:59:59.999Z}}&grouping=&departmentId={{departmentId}}&userId={{userId}}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+startPeriod
+{{2024-07-01T23:59:59.999Z}}
+
+endPeriod
+{{2024-07-30T23:59:59.999Z}}
+
+grouping
+departmentId
+{{departmentId}}
+
+userId
+{{userId}}
+
+Example Request
+Buscar estatísticas por departamento + usuário
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/dashboard/general?startPeriod={{2024-07-01T23:59:59.999Z}}&endPeriod={{2024-07-30T23:59:59.999Z}}&grouping=&departmentId={{departmentId}}&userId={{userId}}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar chamados fechados por conexão
+{{URL}}/api/v1/tickets?query={"distinct":true,"order":[["updatedAt","DESC"]],"where":{"isOpen":false},"include":[{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true,"serviceId":"{{serviceId}}"},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true}]}],"page":1,"perPage":20}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"distinct":true,"order":[["updatedAt","DESC"]],"where":{"isOpen":false},"include":[{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true,"serviceId":"{{serviceId}}"},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true}]}],"page":1,"perPage":20}
+
+Example Request
+Buscar chamados fechados por conexão
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets?query={\"distinct\":true,\"order\":[[\"updatedAt\",\"DESC\"]],\"where\":{\"isOpen\":false},\"include\":[{\"model\":\"contact\",\"attributes\":[\"id\",\"accountId\",\"name\",\"alternativeName\",\"internalName\",\"serviceId\",\"data\",\"note\",\"personId\",\"status\"],\"required\":true,\"where\":{\"visible\":true,\"serviceId\":\"{{serviceId}}\"},\"include\":[{\"model\":\"service\",\"attributes\":[\"id\",\"name\",\"type\",\"accountId\",\"botId\",\"archivedAt\"],\"required\":true}]}],\"page\":1,\"perPage\":20}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar chamados abertos + fechados por conexão
+{{URL}}/api/v1/tickets?query={"distinct":true,"order":[["updatedAt","DESC"]],"where":{"isOpen":{"$in":[true,false]}},"include":[{"model":"contact","attributes":["name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true,"serviceId":"{{serviceId}}"},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true}]}],"page":1,"perPage":20}
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"distinct":true,"order":[["updatedAt","DESC"]],"where":{"isOpen":{"$in":[true,false]}},"include":[{"model":"contact","attributes":["name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true,"serviceId":"{{serviceId}}"},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true}]}],"page":1,"perPage":20}
+
+Example Request
+Buscar chamados abertos + fechados por conexão
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets?query={\"distinct\":true,\"order\":[[\"updatedAt\",\"DESC\"]],\"where\":{\"isOpen\":{\"$in\":[true,false]}},\"include\":[{\"model\":\"contact\",\"attributes\":[\"name\",\"alternativeName\",\"internalName\",\"serviceId\",\"data\",\"note\",\"personId\",\"status\"],\"required\":true,\"where\":{\"visible\":true,\"serviceId\":\"{{serviceId}}\"},\"include\":[{\"model\":\"service\",\"attributes\":[\"id\",\"name\",\"type\",\"accountId\",\"botId\",\"archivedAt\"],\"required\":true}]}],\"page\":1,\"perPage\":20}", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Buscar todos os chamados da plataforma
+{{URL}}/api/v1/tickets?query={"distinct":true,"order":[["updatedAt","DESC"]],"where":{},"include":[{"model":"account"},{"model":"firstMessage","attributes":["id","type","text","timestamp","isFromMe","sent","data","accountId","serviceId","contactId","fromId","toId","userId","ticketId","isFromBot","isFromSync","visible","ticketUserId","ticketDepartmentId","origin","botId","campaignId"]},{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true},{"model":"tags","attributes":["id","label","accountId"]},{"model":"person","attributes":["id","name","document","accountId"]},{"model":"thumbAvatar"}]},{"model":"user","attributes":["id","name","email","isSuperAdmin","active","accountId","isFirstLogin","status","timetableId","archivedAt","phoneNumber","data","language","isActiveInternalChat"]},{"model":"department","attributes":["id","name","accountId","archivedAt","distributionId"]},{"model":"ticketTopics","attributes":["id","name","archivedAt"]}]}&perPage=30
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+query
+{"distinct":true,"order":[["updatedAt","DESC"]],"where":{},"include":[{"model":"account"},{"model":"firstMessage","attributes":["id","type","text","timestamp","isFromMe","sent","data","accountId","serviceId","contactId","fromId","toId","userId","ticketId","isFromBot","isFromSync","visible","ticketUserId","ticketDepartmentId","origin","botId","campaignId"]},{"model":"contact","attributes":["id","accountId","name","alternativeName","internalName","serviceId","data","note","personId","status"],"required":true,"where":{"visible":true},"include":[{"model":"service","attributes":["id","name","type","accountId","botId","archivedAt"],"required":true},{"model":"tags","attributes":["id","label","accountId"]},{"model":"person","attributes":["id","name","document","accountId"]},{"model":"thumbAvatar"}]},{"model":"user","attributes":["id","name","email","isSuperAdmin","active","accountId","isFirstLogin","status","timetableId","archivedAt","phoneNumber","data","language","isActiveInternalChat"]},{"model":"department","attributes":["id","name","accountId","archivedAt","distributionId"]},{"model":"ticketTopics","attributes":["id","name","archivedAt"]}]}
+
+perPage
+30
+
+Example Request
+Buscar todos os chamados da plataforma
+View More
+javascript
+var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/tickets?query={\"distinct\":true,\"order\":[[\"updatedAt\",\"DESC\"]],\"where\":{},\"include\":[{\"model\":\"account\"},{\"model\":\"firstMessage\",\"attributes\":[\"id\",\"type\",\"text\",\"timestamp\",\"isFromMe\",\"sent\",\"data\",\"accountId\",\"serviceId\",\"contactId\",\"fromId\",\"toId\",\"userId\",\"ticketId\",\"isFromBot\",\"isFromSync\",\"visible\",\"ticketUserId\",\"ticketDepartmentId\",\"origin\",\"botId\",\"campaignId\"]},{\"model\":\"contact\",\"attributes\":[\"id\",\"accountId\",\"name\",\"alternativeName\",\"internalName\",\"serviceId\",\"data\",\"note\",\"personId\",\"status\"],\"required\":true,\"where\":{\"visible\":true},\"include\":[{\"model\":\"service\",\"attributes\":[\"id\",\"name\",\"type\",\"accountId\",\"botId\",\"archivedAt\"],\"required\":true},{\"model\":\"tags\",\"attributes\":[\"id\",\"label\",\"accountId\"]},{\"model\":\"person\",\"attributes\":[\"id\",\"name\",\"document\",\"accountId\"]},{\"model\":\"thumbAvatar\"}]},{\"model\":\"user\",\"attributes\":[\"id\",\"name\",\"email\",\"isSuperAdmin\",\"active\",\"accountId\",\"isFirstLogin\",\"status\",\"timetableId\",\"archivedAt\",\"phoneNumber\",\"data\",\"language\",\"isActiveInternalChat\"]},{\"model\":\"department\",\"attributes\":[\"id\",\"name\",\"accountId\",\"archivedAt\",\"distributionId\"]},{\"model\":\"ticketTopics\",\"attributes\":[\"id\",\"name\",\"archivedAt\"]}]}&perPage=30", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Exportar histórico de chamados em PDF
+{{URLbase}}/pdf/tickets/{{ticketId}}/pt-BR?pdf=1&lng=pt-BR
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+PARAMS
+pdf
+1
+
+lng
+pt-BR
+
+Example Request
+Exportar histórico de chamados em PDF
+View More
+javascript
+var raw = "";
+
+var requestOptions = {
+  method: 'GET',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URLbase}}/pdf/tickets/{{ticketId}}/pt-BR?pdf=1&lng=pt-BR", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+Mensagens
+AUTHORIZATION
+Bearer Token
+This folder is using Bearer Token from folder🛠️ Populares
+POST
+Enviar mensagem
+{{URL}}/api/v1/messages
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{
+    "text": "{{text}}", //Texto
+    "type": "chat",
+    "contactId": "{{contactId}}", //ID contato
+    "userId": "{{userId}}", //ID usuário
+    "origin": "bot" // bot or user
+}
+Example Request
+Enviar mensagem
+View More
+javascript
+var raw = "{\r\n    \"text\": \"{{text}}\", //Texto\r\n    \"type\": \"chat\",\r\n    \"contactId\": \"{{contactId}}\", //ID contato\r\n    \"userId\": \"{{userId}}\", //ID usuário\r\n    \"origin\": \"bot\" // bot or user\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/messages", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Enviar mensagem SEM abrir o chamado
+{{URL}}/api/v1/messages
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+View More
+json
+{
+    "text": "{{text}}",
+    "type": "chat",
+    "contactId": "{{contactId}}",
+    "userId": "{{userId}}",
+    "dontOpenTicket": "true", //este parametro faz com que o chamado não seja aberto no momento do envio da mensagem
+    "origin": "bot" // bot or user
+}
+Example Request
+Enviar mensagem SEM abrir o chamado
+View More
+javascript
+var raw = "{\r\n    \"text\": \"{{text}}\",\r\n    \"type\": \"chat\",\r\n    \"contactId\": \"{{contactId}}\",\r\n    \"userId\": \"{{userId}}\",\r\n    \"dontOpenTicket\": \"true\", //este parametro faz com que o chamado não seja aberto no momento do envio da mensagem\r\n    \"origin\": \"bot\" // bot or user\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/messages", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Enviar comentário
+{{URL}}/api/v1/messages
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{
+    "text": "{{text}}", //texto
+    "type": "comment", // chat or comment
+    "contactId": "{{contactId}}", //id contato
+    "userId": "{{userId}}", //id usuário
+    "origin": "bot" // bot or user
+}
+Example Request
+Enviar comentário
+View More
+javascript
+var raw = "{\r\n    \"text\": \"{{text}}\", //texto\r\n    \"type\": \"comment\", // chat or comment\r\n    \"contactId\": \"{{contactId}}\", //id contato\r\n    \"userId\": \"{{userId}}\", //id usuário\r\n    \"origin\": \"bot\" // bot or user\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/messages", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+POST
+Enviar de mensagem usando bot e sem abrir chamado
+{{URL}}/api/v1/messages
+AUTHORIZATION
+Bearer Token
+Token
+{{token}}
+
+Body
+raw (json)
+json
+{
+"text": "{{text}}",
+"number": "{{number}}",
+"serviceId": "{{serviceid}}",
+"origin": "bot",
+"dontOpenticket": true
+}
+Example Request
+Enviar de mensagem usando bot e sem abrir chamado
+View More
+javascript
+var raw = "{\r\n\"text\": \"{{text}}\",\r\n\"number\": \"{{number}}\",\r\n\"serviceId\": \"{{serviceid}}\",\r\n\"origin\": \"bot\",\r\n\"dontOpenticket\": true\r\n}";
+
+var requestOptions = {
+  method: 'POST',
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("{{URL}}/api/v1/messages", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
