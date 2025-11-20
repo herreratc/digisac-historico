@@ -58,9 +58,9 @@ async function listarCampanhas({ dataInicio, dataFim, page = 1, perPage = 50, bo
   const query = {
     order: [['createdAt', 'DESC']],
     include: [
-      'service',
-      'tags',
-      { model: 'messages', include: 'file' },
+      { model: 'service' },
+      { model: 'tags' },
+      { model: 'messages', include: [{ model: 'file' }] },
       { model: 'createdBy', attributes: ['id', 'name'] },
       { model: 'sentBy', attributes: ['id', 'name'] }
     ],
