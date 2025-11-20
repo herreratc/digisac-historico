@@ -104,7 +104,7 @@ async function exportarResultadosCampanha(campaignId, type = 'semiColon') {
   return csv;
 }
 
-async function buscarTickets({ dataInicio, dataFim, serviceId, page = 1, perPage = 200, isOpen }) {
+async function buscarTickets({ dataInicio, dataFim, serviceId, page = 1, perPage = 1000, isOpen }) {
   const whereAnd = [];
 
   if (dataInicio) {
@@ -153,9 +153,10 @@ async function buscarTickets({ dataInicio, dataFim, serviceId, page = 1, perPage
 async function buscarTicketsAteCompletar(filtros) {
   const todosOsTickets = [];
   let pagina = 1;
+  const pageSize = filtros.perPage || 1000;
 
   while (true) {
-    const resultado = await buscarTickets({ ...filtros, page: pagina });
+    const resultado = await buscarTickets({ ...filtros, page: pagina, perPage: pageSize });
     const registros = resultado.data || resultado || [];
     const total = resultado.meta?.total;
 
@@ -165,12 +166,12 @@ async function buscarTicketsAteCompletar(filtros) {
 
     todosOsTickets.push(...registros);
 
-    if (!total || todosOsTickets.length >= total) {
+    if ((total && todosOsTickets.length >= total) || registros.length < pageSize) {
       break;
     }
 
     pagina += 1;
-    if (pagina > 50) {
+    if (pagina > 100) {
       // Evita loops infinitos caso a API não retorne meta.total
       break;
     }

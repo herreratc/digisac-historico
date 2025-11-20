@@ -76,7 +76,7 @@ router.get('/tickets/estatisticas', async (req, res) => {
       dataInicio,
       dataFim,
       serviceId,
-      perPage: Number(perPage) || 200,
+      perPage: Number(perPage) || 1000,
       isOpen: typeof isOpen === 'string' ? isOpen === 'true' : undefined
     });
 

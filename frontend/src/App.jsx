@@ -2,8 +2,16 @@ import { useEffect, useMemo, useState } from 'react';
 import FilterBar from './components/FilterBar';
 import Leaderboard from './components/Leaderboard';
 import StatCard from './components/StatCard';
+import InsightCard from './components/InsightCard';
+import DonutChart from './components/DonutChart';
+import BarChart from './components/BarChart';
 import { fetchDashboardStats } from './api';
 import './index.css';
+
+const PAGE_SIZE = 1000;
+
+const formatNumber = (value) =>
+  typeof value === 'number' ? value.toLocaleString('pt-BR') : value || '--';
 
 function App() {
   const [filters, setFilters] = useState({ dataInicio: '', dataFim: '', serviceId: '', isOpen: '' });
@@ -15,10 +23,42 @@ function App() {
   const filtrosFormatados = useMemo(
     () => ({
       ...filters,
-      isOpen: filters.isOpen === '' ? undefined : filters.isOpen
+      isOpen: filters.isOpen === '' ? undefined : filters.isOpen,
+      perPage: PAGE_SIZE
     }),
     [filters]
   );
+
+  const statusDistribuicao = useMemo(() => {
+    const abertos = stats?.resumo.totalAbertos ?? 0;
+    const fechados = stats?.resumo.totalFechados ?? 0;
+    const total = abertos + fechados;
+
+    if (!total) {
+      return null;
+    }
+
+    return {
+      abertos,
+      fechados,
+      porcentagemAbertos: Math.round((abertos / total) * 100),
+      porcentagemFechados: Math.round((fechados / total) * 100)
+    };
+  }, [stats]);
+
+  const cargaPorAtendente = useMemo(() => {
+    if (!stats?.quantidadePorAtendente?.length) return [];
+
+    const topAtendentes = stats.quantidadePorAtendente.slice(0, 7);
+    const restante = stats.quantidadePorAtendente.slice(7);
+
+    if (restante.length) {
+      const outros = restante.reduce((acc, curr) => acc + curr.quantidade, 0);
+      topAtendentes.push({ nome: 'Outros', quantidade: outros });
+    }
+
+    return topAtendentes;
+  }, [stats]);
 
   const carregarDados = async () => {
     setLoading(true);
@@ -54,9 +94,7 @@ function App() {
             <p>Operação Digisac</p>
           </div>
           <h1>Histórico de atendimentos</h1>
-          <p className="hero__subtitle">
-            Acompanhe a evolução dos tickets por período, serviço e status para responder rápido às mudanças de demanda.
-          </p>
+          <p className="hero__subtitle">Acompanhe a evolução dos tickets por período, serviço e status.</p>
           <div className="hero__meta">
             <span className="pill pill--solid">
               {stats ? `${stats.totalRegistrosProcessados} registros processados` : 'Carregando dados...'}
@@ -85,14 +123,65 @@ function App() {
         {error && <div className="alert alert--error">{error}</div>}
 
         <section className="grid stats-grid">
-          <StatCard label="Total de chamados" value={stats?.resumo.totalTickets ?? '--'} caption="Movimentações totais no período." highlight />
-          <StatCard label="Chamados abertos" value={stats?.resumo.totalAbertos ?? '--'} caption="Aguardando retorno ou resolução." />
-          <StatCard label="Chamados fechados" value={stats?.resumo.totalFechados ?? '--'} caption="Conversas finalizadas com cliente." />
+          <StatCard
+            label="Total de chamados"
+            value={formatNumber(stats?.resumo.totalTickets ?? '--')}
+            caption="Movimentações totais no período."
+            highlight
+          />
+          <StatCard
+            label="Chamados abertos"
+            value={formatNumber(stats?.resumo.totalAbertos ?? '--')}
+            caption="Aguardando retorno ou resolução."
+          />
+          <StatCard
+            label="Chamados fechados"
+            value={formatNumber(stats?.resumo.totalFechados ?? '--')}
+            caption="Conversas finalizadas com cliente."
+          />
           <StatCard
             label="Filtros aplicados"
             value={filtrosAplicados}
             caption="Quantos critérios estão ativos na pesquisa."
           />
+        </section>
+
+        <section className="grid insight-grid">
+          <InsightCard title="Saúde dos tickets" subtitle="Distribuição entre abertos e fechados">
+            {statusDistribuicao ? (
+              <div className="insight-grid__content">
+                <DonutChart
+                  abertos={statusDistribuicao.abertos}
+                  fechados={statusDistribuicao.fechados}
+                  porcentagemAbertos={statusDistribuicao.porcentagemAbertos}
+                  porcentagemFechados={statusDistribuicao.porcentagemFechados}
+                />
+                <div className="insight-grid__legend">
+                  <div>
+                    <p className="legend__label">Abertos</p>
+                    <p className="legend__value">{formatNumber(statusDistribuicao.abertos)} tickets</p>
+                  </div>
+                  <div>
+                    <p className="legend__label">Fechados</p>
+                    <p className="legend__value">{formatNumber(statusDistribuicao.fechados)} tickets</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="empty">Os filtros ainda não retornaram volume para exibir o gráfico.</p>
+            )}
+          </InsightCard>
+
+          <InsightCard title="Carga por atendente" subtitle="Top filas que mais receberam tickets">
+            {cargaPorAtendente.length ? (
+              <BarChart
+                data={cargaPorAtendente.map((item) => ({ label: item.nome, value: item.quantidade }))}
+                color="#6366f1"
+              />
+            ) : (
+              <p className="empty">Nenhuma movimentação para o período selecionado.</p>
+            )}
+          </InsightCard>
         </section>
 
         <section className="grid two-columns">
