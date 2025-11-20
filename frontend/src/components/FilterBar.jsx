@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-function FilterBar({ filters, onChange, onSubmit, loading }) {
+function FilterBar({ filters, onChange, onSubmit, loading = false }) {
   const handleInput = (event) => {
     const { name, value } = event.target;
     onChange({ ...filters, [name]: value });
@@ -57,10 +57,6 @@ FilterBar.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool
-};
-
-FilterBar.defaultProps = {
-  loading: false
 };
 
 export default FilterBar;

@@ -18,6 +18,10 @@ function buildQueryParam(obj) {
   return new URLSearchParams({ query: JSON.stringify(obj) }).toString();
 }
 
+function withPrefix(path) {
+  return `${NORMALIZED_PREFIX}${path}`;
+}
+
 async function executarRequisicao(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
 
@@ -74,12 +78,12 @@ async function listarCampanhas({ dataInicio, dataFim, page = 1, perPage = 50, bo
 
   const qs = buildQueryParam(query);
 
-  const res = await executarRequisicao(`/campaigns?${qs}`);
+  const res = await executarRequisicao(withPrefix(`/campaigns?${qs}`));
   return res.json();
 }
 
 async function exportarResultadosCampanha(campaignId, type = 'semiColon') {
-  const res = await fetch(`${BASE_URL}/campaigns/export/csv`, {
+  const res = await fetch(`${BASE_URL}${withPrefix('/campaigns/export/csv')}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -142,7 +146,7 @@ async function buscarTickets({ dataInicio, dataFim, serviceId, page = 1, perPage
   }
 
   const qs = buildQueryParam(query);
-  const resposta = await executarRequisicao(`${NORMALIZED_PREFIX}/tickets?${qs}`);
+  const resposta = await executarRequisicao(withPrefix(`/tickets?${qs}`));
   return resposta.json();
 }
 

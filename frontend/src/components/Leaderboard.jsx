@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-function Leaderboard({ title, items, descriptionKeys }) {
+function Leaderboard({ title, items = [], descriptionKeys = [] }) {
   return (
     <div className="panel">
       <div className="panel__header">
@@ -39,11 +39,6 @@ Leaderboard.propTypes = {
     })
   ),
   descriptionKeys: PropTypes.arrayOf(PropTypes.string)
-};
-
-Leaderboard.defaultProps = {
-  items: [],
-  descriptionKeys: []
 };
 
 export default Leaderboard;
