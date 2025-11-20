@@ -7,7 +7,7 @@ function FilterBar({ filters, onChange, onSubmit, loading = false }) {
   };
 
   return (
-    <div className="filter-bar">
+    <div className="filter-bar" role="form" aria-label="Filtros do dashboard">
       <div className="filter-field">
         <label htmlFor="dataInicio">Data início</label>
         <input
@@ -16,18 +16,26 @@ function FilterBar({ filters, onChange, onSubmit, loading = false }) {
           type="datetime-local"
           value={filters.dataInicio}
           onChange={handleInput}
+          placeholder="Selecione a data inicial"
         />
       </div>
       <div className="filter-field">
         <label htmlFor="dataFim">Data fim</label>
-        <input id="dataFim" name="dataFim" type="datetime-local" value={filters.dataFim} onChange={handleInput} />
+        <input
+          id="dataFim"
+          name="dataFim"
+          type="datetime-local"
+          value={filters.dataFim}
+          onChange={handleInput}
+          placeholder="Selecione a data final"
+        />
       </div>
       <div className="filter-field">
         <label htmlFor="serviceId">ID do serviço</label>
         <input
           id="serviceId"
           name="serviceId"
-          placeholder="Opcional"
+          placeholder="Ex.: 123, voice, suporte"
           value={filters.serviceId}
           onChange={handleInput}
         />
@@ -40,9 +48,14 @@ function FilterBar({ filters, onChange, onSubmit, loading = false }) {
           <option value="false">Somente fechados</option>
         </select>
       </div>
-      <button className="primary-btn" onClick={onSubmit} disabled={loading}>
-        {loading ? 'Atualizando...' : 'Aplicar filtros'}
-      </button>
+      <div className="filter-actions">
+        <button className="secondary-btn" onClick={() => onChange({ dataInicio: '', dataFim: '', serviceId: '', isOpen: '' })} disabled={loading}>
+          Limpar
+        </button>
+        <button className="primary-btn" onClick={onSubmit} disabled={loading}>
+          {loading ? 'Atualizando...' : 'Aplicar filtros'}
+        </button>
+      </div>
     </div>
   );
 }
