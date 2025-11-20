@@ -224,12 +224,17 @@ function calcularEstatisticasTickets(tickets) {
     .map(([nome, quantidade]) => ({ nome, quantidade }))
     .sort((a, b) => b.quantidade - a.quantidade);
 
+  const resumo = {
+    totalTickets,
+    totalChamados: totalTickets,
+    totalAbertos,
+    totalChamadosAbertos: totalAbertos,
+    totalFechados,
+    totalChamadosFechados: totalFechados
+  };
+
   return {
-    resumo: {
-      totalTickets,
-      totalAbertos,
-      totalFechados
-    },
+    resumo,
     topClientes: rankingClientes.slice(0, 5),
     atendentesComMaisAtendimentos: rankingAtendentes.slice(0, 5),
     quantidadePorAtendente: rankingAtendentes
