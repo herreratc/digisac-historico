@@ -1,0 +1,19 @@
+{
+  "name": "digisac-historico-api",
+  "version": "1.0.0",
+  "description": "API simples para testar histórico de campanhas da Digisac (GX Consultoria).",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.0",
+    "dotenv": "^16.4.0",
+    "express": "^4.19.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
