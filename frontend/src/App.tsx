@@ -1,24 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
+import BarChart from './components/BarChart';
+import DonutChart from './components/DonutChart';
 import FilterBar from './components/FilterBar';
+import InsightCard from './components/InsightCard';
 import Leaderboard from './components/Leaderboard';
 import StatCard from './components/StatCard';
-import InsightCard from './components/InsightCard';
-import DonutChart from './components/DonutChart';
-import BarChart from './components/BarChart';
 import { fetchDashboardStats } from './api';
 import './index.css';
+import type { DashboardStats, FilterState } from './types';
 
 const PAGE_SIZE = 1000;
 
-const formatNumber = (value) =>
+const formatNumber = (value: number | string | undefined | null) =>
   typeof value === 'number' ? value.toLocaleString('pt-BR') : value || '--';
 
 function App() {
-  const [filters, setFilters] = useState({ dataInicio: '', dataFim: '', serviceId: '', isOpen: '' });
-  const [stats, setStats] = useState(null);
+  const [filters, setFilters] = useState<FilterState>({ dataInicio: '', dataFim: '', serviceId: '', isOpen: '' });
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const filtrosFormatados = useMemo(
     () => ({
@@ -71,7 +72,8 @@ function App() {
       setStats(data);
       setLastUpdated(new Date());
     } catch (err) {
-      setError(err.message);
+      const message = err instanceof Error ? err.message : 'Erro inesperado ao buscar estatísticas';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -83,11 +85,19 @@ function App() {
   }, []);
 
   const filtrosAplicados = stats
-    ? Object.keys(filtrosFormatados).filter((key) => filtrosFormatados[key] !== undefined && filtrosFormatados[key] !== '').length
+    ? Object.entries(filtrosFormatados).filter(([, value]) => value !== undefined && value !== '').length
     : '--';
 
   return (
     <div className="shell">
+      <header className="topbar">
+        <div className="brand">Digisac Insight</div>
+        <div className="topbar__actions">
+          <span className="pill pill--outline">Console premium</span>
+          <span className="pill pill--ghost">React + TypeScript</span>
+        </div>
+      </header>
+
       <section className="hero">
         <div className="hero__content">
           <div className="hero__eyebrow">
@@ -95,16 +105,57 @@ function App() {
             <span className="divider" />
             <p>Operação Digisac</p>
           </div>
-          <h1>Histórico de atendimentos</h1>
-          <p className="hero__subtitle">Acompanhe a evolução dos chamados por período, serviço e status.</p>
+          <h1>Histórico de atendimentos em tempo real</h1>
+          <p className="hero__subtitle">
+            Uma visão premium e responsiva das conversas, construída em TypeScript + Vite para entregar performance, clareza e confiança.
+          </p>
           <div className="hero__meta">
             <span className="pill pill--solid">
-              {stats ? `${totalChamados || 0} chamados processados` : 'Carregando dados...'}
+              {stats ? `${formatNumber(totalChamados ?? 0)} chamados processados` : 'Carregando dados...'}
             </span>
-            <span className="pill pill--ghost">{lastUpdated ? `Atualizado às ${lastUpdated.toLocaleTimeString('pt-BR')}` : 'Aguardando atualização'}</span>
+            <span className="pill pill--ghost">
+              {lastUpdated ? `Atualizado às ${lastUpdated.toLocaleTimeString('pt-BR')}` : 'Aguardando atualização'}
+            </span>
+          </div>
+          <div className="hero__highlights">
+            <div>
+              <p className="eyebrow">Camada executiva</p>
+              <p className="hero__highlight-text">Layout full com contraste, glow e cartões de elite para stakeholders.</p>
+            </div>
+            <div>
+              <p className="eyebrow">Performance</p>
+              <p className="hero__highlight-text">Stack moderna (Vite + TS) garantindo builds rápidos e UX suave.</p>
+            </div>
+            <div>
+              <p className="eyebrow">Foco em clareza</p>
+              <p className="hero__highlight-text">Filtros, gráficos e rankings em um grid master, pronto para operação.</p>
+            </div>
           </div>
         </div>
         <div className="hero__glow" aria-hidden="true" />
+      </section>
+
+      <section className="status-ribbon" aria-label="Informações do painel">
+        <div className="status-ribbon__item">
+          <p className="eyebrow">Momento</p>
+          <p className="status-ribbon__value">{lastUpdated ? lastUpdated.toLocaleTimeString('pt-BR') : 'Live'}</p>
+          <p className="status-ribbon__caption">Latência ultra baixa para analistas.</p>
+        </div>
+        <div className="status-ribbon__item">
+          <p className="eyebrow">Filtros ativos</p>
+          <p className="status-ribbon__value">{filtrosAplicados}</p>
+          <p className="status-ribbon__caption">Combinações inteligentes aplicadas na consulta.</p>
+        </div>
+        <div className="status-ribbon__item">
+          <p className="eyebrow">Dataset</p>
+          <p className="status-ribbon__value">{formatNumber(totalChamados ?? '--')}</p>
+          <p className="status-ribbon__caption">Eventos processados na janela selecionada.</p>
+        </div>
+        <div className="status-ribbon__item">
+          <p className="eyebrow">Modo</p>
+          <p className="status-ribbon__value">Operação 24/7</p>
+          <p className="status-ribbon__caption">Pronto para lideranças e squads.</p>
+        </div>
       </section>
 
       <main className="page">

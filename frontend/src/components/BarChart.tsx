@@ -1,6 +1,14 @@
-import PropTypes from 'prop-types';
+interface BarChartDatum {
+  label: string;
+  value: number;
+}
 
-function BarChart({ data, color = '#6366f1' }) {
+interface BarChartProps {
+  data: BarChartDatum[];
+  color?: string;
+}
+
+function BarChart({ data, color = '#6366f1' }: BarChartProps) {
   const max = Math.max(...data.map((item) => item.value), 0);
 
   return (
@@ -22,15 +30,5 @@ function BarChart({ data, color = '#6366f1' }) {
     </div>
   );
 }
-
-BarChart.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.number.isRequired
-    })
-  ).isRequired,
-  color: PropTypes.string
-};
 
 export default BarChart;

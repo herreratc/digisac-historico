@@ -1,6 +1,12 @@
-import PropTypes from 'prop-types';
+import type { RankingItem } from '../types';
 
-function Leaderboard({ title, items = [], descriptionKeys = [] }) {
+interface LeaderboardProps {
+  title: string;
+  items?: RankingItem[];
+  descriptionKeys?: string[];
+}
+
+function Leaderboard({ title, items = [], descriptionKeys = [] }: LeaderboardProps) {
   return (
     <div className="panel">
       <div className="panel__header">
@@ -29,16 +35,5 @@ function Leaderboard({ title, items = [], descriptionKeys = [] }) {
     </div>
   );
 }
-
-Leaderboard.propTypes = {
-  title: PropTypes.string.isRequired,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      nome: PropTypes.string.isRequired,
-      quantidade: PropTypes.number.isRequired
-    })
-  ),
-  descriptionKeys: PropTypes.arrayOf(PropTypes.string)
-};
 
 export default Leaderboard;

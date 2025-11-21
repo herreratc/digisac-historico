@@ -1,7 +1,15 @@
-import PropTypes from 'prop-types';
+import type { ChangeEvent } from 'react';
+import type { FilterState } from '../types';
 
-function FilterBar({ filters, onChange, onSubmit, loading = false }) {
-  const handleInput = (event) => {
+interface FilterBarProps {
+  filters: FilterState;
+  onChange: (nextFilters: FilterState) => void;
+  onSubmit: () => void;
+  loading?: boolean;
+}
+
+function FilterBar({ filters, onChange, onSubmit, loading = false }: FilterBarProps) {
+  const handleInput = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     onChange({ ...filters, [name]: value });
   };
@@ -59,17 +67,5 @@ function FilterBar({ filters, onChange, onSubmit, loading = false }) {
     </div>
   );
 }
-
-FilterBar.propTypes = {
-  filters: PropTypes.shape({
-    dataInicio: PropTypes.string,
-    dataFim: PropTypes.string,
-    serviceId: PropTypes.string,
-    isOpen: PropTypes.string
-  }).isRequired,
-  onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  loading: PropTypes.bool
-};
 
 export default FilterBar;

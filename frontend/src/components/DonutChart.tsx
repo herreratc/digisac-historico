@@ -1,6 +1,11 @@
-import PropTypes from 'prop-types';
+interface DonutChartProps {
+  abertos: number;
+  fechados: number;
+  porcentagemAbertos: number;
+  porcentagemFechados: number;
+}
 
-function DonutChart({ abertos, fechados, porcentagemAbertos, porcentagemFechados }) {
+function DonutChart({ abertos, fechados, porcentagemAbertos, porcentagemFechados }: DonutChartProps) {
   const total = abertos + fechados;
   const abertoPercentual = total ? (abertos / total) * 100 : 0;
   const gradient = `conic-gradient(#22c55e 0% ${abertoPercentual}%, #6366f1 ${abertoPercentual}% 100%)`;
@@ -20,12 +25,5 @@ function DonutChart({ abertos, fechados, porcentagemAbertos, porcentagemFechados
     </div>
   );
 }
-
-DonutChart.propTypes = {
-  abertos: PropTypes.number.isRequired,
-  fechados: PropTypes.number.isRequired,
-  porcentagemAbertos: PropTypes.number.isRequired,
-  porcentagemFechados: PropTypes.number.isRequired
-};
 
 export default DonutChart;
