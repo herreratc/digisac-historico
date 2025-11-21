@@ -5,10 +5,11 @@ interface FilterBarProps {
   filters: FilterState;
   onChange: (nextFilters: FilterState) => void;
   onSubmit: () => void;
+  onReset: () => void;
   loading?: boolean;
 }
 
-function FilterBar({ filters, onChange, onSubmit, loading = false }: FilterBarProps) {
+function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: FilterBarProps) {
   const handleInput = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     onChange({ ...filters, [name]: value });
@@ -39,25 +40,25 @@ function FilterBar({ filters, onChange, onSubmit, loading = false }: FilterBarPr
         />
       </div>
       <div className="filter-field">
-        <label htmlFor="serviceId">ID do serviço</label>
+        <label htmlFor="tags">Tags</label>
         <input
-          id="serviceId"
-          name="serviceId"
-          placeholder="Ex.: 123, voice, suporte"
-          value={filters.serviceId}
+          id="tags"
+          name="tags"
+          placeholder="Ex.: suporte, vip"
+          value={filters.tags}
           onChange={handleInput}
         />
       </div>
       <div className="filter-field">
-        <label htmlFor="isOpen">Status</label>
-        <select id="isOpen" name="isOpen" value={filters.isOpen} onChange={handleInput}>
-          <option value="">Abertos e fechados</option>
-          <option value="true">Somente abertos</option>
-          <option value="false">Somente fechados</option>
+        <label htmlFor="status">Status</label>
+        <select id="status" name="status" value={filters.status} onChange={handleInput}>
+          <option value="">Todos</option>
+          <option value="open">Abertos</option>
+          <option value="closed">Fechados</option>
         </select>
       </div>
       <div className="filter-actions">
-        <button className="secondary-btn" onClick={() => onChange({ dataInicio: '', dataFim: '', serviceId: '', isOpen: '' })} disabled={loading}>
+        <button className="secondary-btn" onClick={onReset} disabled={loading}>
           Limpar
         </button>
         <button className="primary-btn" onClick={onSubmit} disabled={loading}>

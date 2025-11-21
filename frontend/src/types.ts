@@ -1,10 +1,10 @@
-export type BooleanFilter = '' | 'true' | 'false';
+export type StatusFilter = '' | 'open' | 'closed';
 
 export interface FilterState {
   dataInicio: string;
   dataFim: string;
-  serviceId: string;
-  isOpen: BooleanFilter;
+  tags: string;
+  status: StatusFilter;
 }
 
 export interface TicketResumo {
