@@ -18,10 +18,13 @@ function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: Fi
   return (
     <div className="filter-bar" role="form" aria-label="Filtros do dashboard">
       <div className="filter-field">
-        <label htmlFor="dataInicio">Data início</label>
+        <label className="filter-label" htmlFor="dataInicio">
+          Data início
+        </label>
         <input
           id="dataInicio"
           name="dataInicio"
+          className="filter-input"
           type="date"
           value={filters.dataInicio}
           onChange={handleInput}
@@ -29,10 +32,13 @@ function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: Fi
         />
       </div>
       <div className="filter-field">
-        <label htmlFor="dataFim">Data fim</label>
+        <label className="filter-label" htmlFor="dataFim">
+          Data fim
+        </label>
         <input
           id="dataFim"
           name="dataFim"
+          className="filter-input"
           type="date"
           value={filters.dataFim}
           onChange={handleInput}
@@ -40,28 +46,33 @@ function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: Fi
         />
       </div>
       <div className="filter-field">
-        <label htmlFor="tags">Tags</label>
+        <label className="filter-label" htmlFor="tags">
+          Tags
+        </label>
         <input
           id="tags"
           name="tags"
+          className="filter-input"
           placeholder="Ex.: suporte, vip"
           value={filters.tags}
           onChange={handleInput}
         />
       </div>
       <div className="filter-field">
-        <label htmlFor="status">Status</label>
-        <select id="status" name="status" value={filters.status} onChange={handleInput}>
+        <label className="filter-label" htmlFor="status">
+          Status
+        </label>
+        <select id="status" name="status" className="filter-select" value={filters.status} onChange={handleInput}>
           <option value="">Todos</option>
           <option value="open">Abertos</option>
           <option value="closed">Fechados</option>
         </select>
       </div>
       <div className="filter-actions">
-        <button className="secondary-btn" onClick={onReset} disabled={loading}>
+        <button className="btn outline" onClick={onReset} disabled={loading}>
           Limpar
         </button>
-        <button className="primary-btn" onClick={onSubmit} disabled={loading}>
+        <button className="btn primary" onClick={onSubmit} disabled={loading}>
           {loading ? 'Atualizando...' : 'Aplicar filtros'}
         </button>
       </div>
