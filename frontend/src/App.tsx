@@ -29,11 +29,14 @@ const NAV_ACTIONS = [
 ];
 
 function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [filters, setFilters] = useState<FilterState>(createDefaultFilters);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isSidebarExpanded = isSidebarPinned || isSidebarHovered;
 
   const filtrosFormatados = useMemo(
     () => ({
@@ -132,8 +135,13 @@ function App() {
   });
 
   return (
-    <div className={`layout ${isSidebarOpen ? '' : 'layout--collapsed'}`}>
-      <Sidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen((open) => !open)} />
+    <div className={`layout ${isSidebarExpanded ? 'layout--expanded' : 'layout--collapsed'}`}>
+      <Sidebar
+        isExpanded={isSidebarExpanded}
+        isPinned={isSidebarPinned}
+        onToggle={() => setIsSidebarPinned((pinned) => !pinned)}
+        onHoverChange={setIsSidebarHovered}
+      />
 
       <div className="main" aria-busy={loading}>
         <PageHeader title="Visão geral e resumo" subtitle="Dashboard" actions={actionButtons} />
