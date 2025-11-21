@@ -1,18 +1,20 @@
+import type { DashboardStats, FilterState } from './types';
+
 const API_URL = import.meta.env.VITE_API_URL || '';
 
-function buildQuery(params) {
+function buildQuery(params: Partial<FilterState & { perPage: number }>) {
   const query = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') {
-      query.append(key, value);
+      query.append(key, String(value));
     }
   });
 
   return query.toString();
 }
 
-export async function fetchDashboardStats(params) {
+export async function fetchDashboardStats(params: Partial<FilterState & { perPage: number }>): Promise<DashboardStats> {
   const queryString = buildQuery(params);
   const url = queryString
     ? `${API_URL}/historico-digisac/tickets/estatisticas?${queryString}`

@@ -1,6 +1,12 @@
-import PropTypes from 'prop-types';
+import type { ReactNode } from 'react';
 
-function InsightCard({ title, subtitle, children }) {
+interface InsightCardProps {
+  title: string;
+  subtitle?: string;
+  children?: ReactNode;
+}
+
+function InsightCard({ title, subtitle, children }: InsightCardProps) {
   return (
     <div className="insight-card">
       <div className="insight-card__header">
@@ -13,11 +19,5 @@ function InsightCard({ title, subtitle, children }) {
     </div>
   );
 }
-
-InsightCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string,
-  children: PropTypes.node
-};
 
 export default InsightCard;
