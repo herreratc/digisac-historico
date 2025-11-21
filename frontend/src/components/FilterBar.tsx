@@ -22,7 +22,7 @@ function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: Fi
         <input
           id="dataInicio"
           name="dataInicio"
-          type="datetime-local"
+          type="date"
           value={filters.dataInicio}
           onChange={handleInput}
           placeholder="Selecione a data inicial"
@@ -33,7 +33,7 @@ function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: Fi
         <input
           id="dataFim"
           name="dataFim"
-          type="datetime-local"
+          type="date"
           value={filters.dataFim}
           onChange={handleInput}
           placeholder="Selecione a data final"

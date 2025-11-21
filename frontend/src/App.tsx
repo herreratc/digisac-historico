@@ -4,8 +4,6 @@ import { fetchDashboardStats } from './api';
 import './index.css';
 import type { DashboardStats, FilterState } from './types';
 
-const PAGE_SIZE = 1000;
-
 const formatNumber = (value: number | string | undefined | null) =>
   typeof value === 'number' ? value.toLocaleString('pt-BR') : value || '--';
 
@@ -13,10 +11,8 @@ function createDefaultFilters(): FilterState {
   const fim = new Date();
   const inicio = new Date();
   inicio.setDate(fim.getDate() - 6);
-  inicio.setHours(0, 0, 0, 0);
-  fim.setHours(23, 59, 0, 0);
 
-  const formatDate = (date: Date) => date.toISOString().slice(0, 16);
+  const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 
   return {
     dataInicio: formatDate(inicio),
@@ -31,13 +27,13 @@ function App() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const filtrosFormatados = useMemo(
     () => ({
       ...filters,
-      status: filters.status || undefined,
-      perPage: PAGE_SIZE
+      dataInicio: filters.dataInicio ? `${filters.dataInicio}T00:01:00` : undefined,
+      dataFim: filters.dataFim ? `${filters.dataFim}T23:59:00` : undefined,
+      status: filters.status || undefined
     }),
     [filters]
   );
@@ -53,7 +49,6 @@ function App() {
     try {
       const data = await fetchDashboardStats(filtrosFormatados);
       setStats(data);
-      setLastUpdated(new Date());
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro inesperado ao buscar estatísticas';
       setError(message);
@@ -65,13 +60,12 @@ function App() {
   const handleReset = () => {
     setFilters(createDefaultFilters());
     setStats(null);
-    setLastUpdated(null);
     setError(null);
   };
 
   return (
-    <div className="app-shell">
-      <header className="page-header">
+    <div className="layout">
+      <aside className="sidebar" aria-label="Menu principal">
         <div className="brand">
           <span className="brand-dot" aria-hidden>
             •
@@ -79,7 +73,6 @@ function App() {
           <div>
             <p className="brand-label">CX Operações</p>
             <h1>DASHBOARD GX CONSULTORIA</h1>
-            <p className="brand-subtitle">Visão simplificada dos atendimentos com filtros acionados apenas sob demanda.</p>
           </div>
         </div>
         <nav className="slide-menu" aria-label="Navegação principal">
@@ -89,74 +82,70 @@ function App() {
             </div>
           ))}
         </nav>
-      </header>
+      </aside>
 
-      <section className="filters-card">
-        <div>
-          <p className="eyebrow">Filtros de consulta</p>
-          <h2>Carregue dados somente ao aplicar o filtro</h2>
-          <p className="helper-text">Por padrão, considere o recorte dos últimos 7 dias. Ajuste as opções abaixo e clique em "Aplicar filtros".</p>
-        </div>
-        <FilterBar filters={filters} onChange={setFilters} onSubmit={carregarDados} onReset={handleReset} loading={loading} />
-      </section>
-
-      {error && <div className="alert alert--error">{error}</div>}
-
-      <main className="content-grid">
-        <section className="stat-card highlight">
-          <div>
-            <p className="eyebrow">Total de atendimentos no período</p>
-            <h2>{formatNumber(totalChamados)}</h2>
+      <div className="app-shell">
+        <section className="filters-card">
+          <div className="filters-heading">
+            <p className="eyebrow">Filtros</p>
+            <h2>Selecione o período e aplique</h2>
           </div>
-          <div className="meta">
-            <span>Última atualização</span>
-            <strong>{lastUpdated ? lastUpdated.toLocaleString('pt-BR') : 'Aguardando aplicação do filtro'}</strong>
-          </div>
+          <FilterBar filters={filters} onChange={setFilters} onSubmit={carregarDados} onReset={handleReset} loading={loading} />
         </section>
 
-        <div className="panels">
-          <section className="panel">
-            <div className="panel-header">
-              <h3>Total de atendimentos por atendente</h3>
-              <p>Resultado limitado aos {PAGE_SIZE.toLocaleString('pt-BR')} primeiros registros retornados.</p>
+        {error && <div className="alert alert--error">{error}</div>}
+
+        <main className="content-grid">
+          <section className="stat-card highlight">
+            <div>
+              <p className="eyebrow">Total de atendimentos no período</p>
+              <h2>{formatNumber(totalChamados)}</h2>
             </div>
-            {stats?.quantidadePorAtendente?.length ? (
-              <ul className="list">
-                {stats.quantidadePorAtendente.map((item) => (
-                  <li key={item.nome} className="list-row">
-                    <span>{item.nome}</span>
-                    <strong>{formatNumber(item.quantidade)}</strong>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty">Nenhum atendente listado. Aplique um filtro para ver o resultado.</p>
-            )}
           </section>
 
-          <section className="panel">
-            <div className="panel-header">
-              <h3>Contatos com mais atendimentos</h3>
-              <p>Exibe clientes/contatos que mais abriram chamados no período filtrado.</p>
-            </div>
-            {stats?.topClientes?.length ? (
-              <ul className="list">
-                {stats.topClientes.map((item) => (
-                  <li key={item.nome} className="list-row">
-                    <div>
-                      <p className="item-title">{item.nome}</p>
-                      {item.canal && <p className="item-subtitle">Canal: {item.canal}</p>}
-                    </div>
-                    <strong>{formatNumber(item.quantidade)}</strong>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty">Nenhum contato encontrado. Ajuste os filtros e clique em aplicar.</p>
-            )}
-          </section>
-        </div>
-      </main>
+          <div className="panels">
+            <section className="panel">
+              <div className="panel-header">
+                <h3>Total de atendimentos por atendente</h3>
+              </div>
+              {stats?.quantidadePorAtendente?.length ? (
+                <ul className="list">
+                  {stats.quantidadePorAtendente.map((item) => (
+                    <li key={item.nome} className="list-row">
+                      <span>{item.nome}</span>
+                      <strong>{formatNumber(item.quantidade)}</strong>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty">Nenhum atendente listado. Aplique um filtro para ver o resultado.</p>
+              )}
+            </section>
+
+            <section className="panel">
+              <div className="panel-header">
+                <h3>Contatos com mais atendimentos</h3>
+                <p>Exibe clientes/contatos que mais abriram chamados no período filtrado.</p>
+              </div>
+              {stats?.topClientes?.length ? (
+                <ul className="list">
+                  {stats.topClientes.map((item) => (
+                    <li key={item.nome} className="list-row">
+                      <div>
+                        <p className="item-title">{item.nome}</p>
+                        {item.canal && <p className="item-subtitle">Canal: {item.canal}</p>}
+                      </div>
+                      <strong>{formatNumber(item.quantidade)}</strong>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty">Nenhum contato encontrado. Ajuste os filtros e clique em aplicar.</p>
+              )}
+            </section>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
