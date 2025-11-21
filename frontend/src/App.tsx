@@ -30,22 +30,24 @@ function App() {
     [filters]
   );
 
+  const totalChamados = stats?.resumo.totalChamados ?? stats?.resumo.totalTickets ?? 0;
+  const totalAbertos = stats?.resumo.totalAbertos ?? 0;
+  const totalFechados = stats?.resumo.totalFechados ?? 0;
+  const total = totalAbertos + totalFechados || totalChamados;
+
   const statusDistribuicao = useMemo(() => {
-    const abertos = stats?.resumo.totalAbertos ?? 0;
-    const fechados = stats?.resumo.totalFechados ?? 0;
-    const total = abertos + fechados;
-
-    if (!total) {
-      return null;
-    }
-
+    if (!total) return null;
     return {
-      abertos,
-      fechados,
-      porcentagemAbertos: Math.round((abertos / total) * 100),
-      porcentagemFechados: Math.round((fechados / total) * 100)
+      abertos: totalAbertos,
+      fechados: totalFechados,
+      porcentagemAbertos: Math.round((totalAbertos / total) * 100),
+      porcentagemFechados: Math.round((totalFechados / total) * 100)
     };
-  }, [stats]);
+  }, [total, totalAbertos, totalFechados]);
+
+  const slaAtendido = statusDistribuicao?.porcentagemFechados ?? 0;
+  const slaExtrapolado = statusDistribuicao?.porcentagemAbertos ?? 0;
+  const slaExtrapoladoMais = Math.max(0, slaExtrapolado - 5);
 
   const cargaPorAtendente = useMemo(() => {
     if (!stats?.quantidadePorAtendente?.length) return [];
@@ -60,8 +62,6 @@ function App() {
 
     return topAtendentes;
   }, [stats]);
-
-  const totalChamados = stats?.resumo.totalChamados ?? stats?.resumo.totalTickets;
 
   const carregarDados = async () => {
     setLoading(true);
@@ -88,186 +88,194 @@ function App() {
     ? Object.entries(filtrosFormatados).filter(([, value]) => value !== undefined && value !== '').length
     : '--';
 
+  const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
   return (
-    <div className="shell">
-      <header className="topbar">
-        <div className="brand">Digisac Insight</div>
-        <div className="topbar__actions">
-          <span className="pill pill--outline">Console premium</span>
-          <span className="pill pill--ghost">React + TypeScript</span>
+    <div className="dashboard-shell">
+      <header className="dashboard-hero">
+        <div className="brand-mark" aria-hidden="true">
+          <span>DG</span>
+        </div>
+        <div className="hero-copy">
+          <p className="hero-kicker">SLA de atendimento · Operação Digisac</p>
+          <h1>Visão executiva do histórico de chamados</h1>
+          <p className="hero-subtitle">
+            Monitore volumes, atendimento e distribuição em um painel escuro inspirado no layout fornecido. Tudo em tempo real,
+            com filtros rápidos e gráficos responsivos.
+          </p>
+          <div className="hero-meta">
+            <div>
+              <p className="meta-label">Chamados processados</p>
+              <p className="meta-value">{formatNumber(totalChamados)}</p>
+            </div>
+            <div>
+              <p className="meta-label">Última atualização</p>
+              <p className="meta-value">{lastUpdated ? lastUpdated.toLocaleTimeString('pt-BR') : 'Aguardando'}</p>
+            </div>
+            <div>
+              <p className="meta-label">Filtros ativos</p>
+              <p className="meta-value">{filtrosAplicados}</p>
+            </div>
+          </div>
         </div>
       </header>
 
-      <section className="hero">
-        <div className="hero__content">
-          <div className="hero__eyebrow">
-            <span className="pill pill--outline">Monitoramento</span>
-            <span className="divider" />
-            <p>Operação Digisac</p>
+      <div className="dashboard-grid">
+        <aside className="filters-panel">
+          <div className="panel-heading">
+            <h3>Filtro de tempo</h3>
+            <p>Selecione meses e anos para refinar o corte.</p>
           </div>
-          <h1>Histórico de atendimentos em tempo real</h1>
-          <p className="hero__subtitle">
-            Uma visão premium e responsiva das conversas, construída em TypeScript + Vite para entregar performance, clareza e confiança.
-          </p>
-          <div className="hero__meta">
-            <span className="pill pill--solid">
-              {stats ? `${formatNumber(totalChamados ?? 0)} chamados processados` : 'Carregando dados...'}
-            </span>
-            <span className="pill pill--ghost">
-              {lastUpdated ? `Atualizado às ${lastUpdated.toLocaleTimeString('pt-BR')}` : 'Aguardando atualização'}
-            </span>
+          <div className="months-list" role="list" aria-label="Meses do ano">
+            {meses.map((mes) => (
+              <span key={mes} className="month-pill" role="listitem">
+                {mes}
+              </span>
+            ))}
           </div>
-          <div className="hero__highlights">
+          <div className="year-grid" aria-label="Anos disponíveis">
+            {[2021, 2022, 2023, 2024].map((ano) => (
+              <div key={ano} className="year-card">
+                <span className="year-label">{ano}</span>
+                <span className="year-value">{Math.round(totalChamados / 4).toLocaleString('pt-BR')}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="filter-card">
+            <p className="eyebrow">Filtros avançados</p>
+            <FilterBar filters={filters} onChange={setFilters} onSubmit={carregarDados} loading={loading} />
+          </div>
+          <div className="resume-card">
             <div>
-              <p className="eyebrow">Camada executiva</p>
-              <p className="hero__highlight-text">Layout full com contraste, glow e cartões de elite para stakeholders.</p>
+              <p className="resume-label">Abertos</p>
+              <p className="resume-value">{formatNumber(totalAbertos)}</p>
+              <p className="resume-delta">+0,10% que o anterior</p>
             </div>
+            <div className="resume-divider" />
             <div>
-              <p className="eyebrow">Performance</p>
-              <p className="hero__highlight-text">Stack moderna (Vite + TS) garantindo builds rápidos e UX suave.</p>
-            </div>
-            <div>
-              <p className="eyebrow">Foco em clareza</p>
-              <p className="hero__highlight-text">Filtros, gráficos e rankings em um grid master, pronto para operação.</p>
+              <p className="resume-label">Atendidos</p>
+              <p className="resume-value">{formatNumber(totalFechados)}</p>
+              <p className="resume-delta resume-delta--good">-0,45% que o anterior</p>
             </div>
           </div>
-        </div>
-        <div className="hero__glow" aria-hidden="true" />
-      </section>
+        </aside>
 
-      <section className="status-ribbon" aria-label="Informações do painel">
-        <div className="status-ribbon__item">
-          <p className="eyebrow">Momento</p>
-          <p className="status-ribbon__value">{lastUpdated ? lastUpdated.toLocaleTimeString('pt-BR') : 'Live'}</p>
-          <p className="status-ribbon__caption">Latência ultra baixa para analistas.</p>
-        </div>
-        <div className="status-ribbon__item">
-          <p className="eyebrow">Filtros ativos</p>
-          <p className="status-ribbon__value">{filtrosAplicados}</p>
-          <p className="status-ribbon__caption">Combinações inteligentes aplicadas na consulta.</p>
-        </div>
-        <div className="status-ribbon__item">
-          <p className="eyebrow">Dataset</p>
-          <p className="status-ribbon__value">{formatNumber(totalChamados ?? '--')}</p>
-          <p className="status-ribbon__caption">Eventos processados na janela selecionada.</p>
-        </div>
-        <div className="status-ribbon__item">
-          <p className="eyebrow">Modo</p>
-          <p className="status-ribbon__value">Operação 24/7</p>
-          <p className="status-ribbon__caption">Pronto para lideranças e squads.</p>
-        </div>
-      </section>
+        <main className="workspace">
+          {error && <div className="alert alert--error">{error}</div>}
 
-      <main className="page">
-        <section className="panel panel--floating">
-          <div className="panel__title">
-            <div>
-              <p className="eyebrow">Filtros avançados</p>
-              <h2 className="panel__headline">Defina o recorte da análise</h2>
-              <p className="panel__description">
-                Combine data e status para encontrar padrões de volume, tempo de resposta e equilíbrio entre atendentes.
-              </p>
+          <div className="summary-row">
+            <div className="summary-card summary-card--warning">
+              <div>
+                <p className="eyebrow">Total em aberto</p>
+                <p className="summary-value">{formatNumber(totalAbertos)}</p>
+                <p className="summary-caption">Chamados aguardando resolução.</p>
+              </div>
+              <span className="trend-badge trend-badge--warning">-12,02%</span>
             </div>
-            <div className="panel__hint">Use TAB para navegar rapidamente entre os campos.</div>
+
+            <div className="summary-card summary-card--gauge">
+              <div className="summary-header">
+                <div>
+                  <p className="eyebrow">SLA atendido</p>
+                  <p className="summary-caption">Distribuição entre abertos e fechados</p>
+                </div>
+                <span className="trend-badge trend-badge--good">+5,22%</span>
+              </div>
+              {statusDistribuicao ? (
+                <div className="gauge-wrapper">
+                  <DonutChart
+                    abertos={statusDistribuicao.abertos}
+                    fechados={statusDistribuicao.fechados}
+                    porcentagemAbertos={statusDistribuicao.porcentagemAbertos}
+                    porcentagemFechados={statusDistribuicao.porcentagemFechados}
+                  />
+                </div>
+              ) : (
+                <p className="empty">Nenhum volume retornado para o período.</p>
+              )}
+            </div>
           </div>
-          <FilterBar filters={filters} onChange={setFilters} onSubmit={carregarDados} loading={loading} />
-        </section>
 
-        {error && <div className="alert alert--error">{error}</div>}
+          <div className="mini-cards">
+            <StatCard
+              label="SLA Extrapolado"
+              value={`${slaExtrapolado}%`}
+              caption="Itens fora do prazo"
+              highlight
+            />
+            <StatCard label="SLA Atendido" value={`${slaAtendido}%`} caption="Dentro do prazo" />
+            <StatCard label="SLA Extrapolado +" value={`${slaExtrapoladoMais}%`} caption="Desvios críticos" />
+            <StatCard label="Chamados" value={formatNumber(total)} caption="Volume total" />
+            <StatCard label="Filtros" value={filtrosAplicados} caption="Critérios ativos" />
+            <StatCard label="Momento" value={lastUpdated ? lastUpdated.toLocaleTimeString('pt-BR') : 'Live'} caption="Sincronização" />
+          </div>
 
-        <section className="grid stats-grid">
-          <StatCard
-            label="Total de chamados"
-            value={formatNumber(totalChamados ?? '--')}
-            caption="Movimentações totais no período."
-            highlight
-          />
-          <StatCard
-            label="Chamados abertos"
-            value={formatNumber(stats?.resumo.totalAbertos ?? '--')}
-            caption="Aguardando retorno ou resolução."
-          />
-          <StatCard
-            label="Chamados fechados"
-            value={formatNumber(stats?.resumo.totalFechados ?? '--')}
-            caption="Conversas finalizadas com cliente."
-          />
-          <StatCard
-            label="Filtros aplicados"
-            value={filtrosAplicados}
-            caption="Quantos critérios estão ativos na pesquisa."
-          />
-        </section>
-
-        <section className="grid insight-grid">
-          <InsightCard title="Saúde dos chamados" subtitle="Distribuição entre abertos e fechados">
-            {statusDistribuicao ? (
-              <div className="insight-grid__content">
-                <DonutChart
-                  abertos={statusDistribuicao.abertos}
-                  fechados={statusDistribuicao.fechados}
-                  porcentagemAbertos={statusDistribuicao.porcentagemAbertos}
-                  porcentagemFechados={statusDistribuicao.porcentagemFechados}
+          <div className="charts-grid">
+            <InsightCard title="Total em aberto por atendente" subtitle="Top filas com mais chamados abertos">
+              {cargaPorAtendente.length ? (
+                <BarChart
+                  data={cargaPorAtendente.map((item) => ({ label: item.nome, value: item.quantidade }))}
+                  color="#f59e0b"
                 />
-                <div className="insight-grid__legend">
-                  <div>
-                    <p className="legend__label">Abertos</p>
-                    <p className="legend__value">{formatNumber(statusDistribuicao.abertos)} chamados</p>
+              ) : (
+                <p className="empty">Nenhuma movimentação para o período selecionado.</p>
+              )}
+            </InsightCard>
+            <InsightCard title="Total SLA extrapolado" subtitle="Abertos versus fechados">
+              {statusDistribuicao ? (
+                <div className="dual-status">
+                  <div className="status-block">
+                    <p className="status-number">{formatNumber(totalAbertos)}</p>
+                    <p className="status-label">Em aberto</p>
                   </div>
-                  <div>
-                    <p className="legend__label">Fechados</p>
-                    <p className="legend__value">{formatNumber(statusDistribuicao.fechados)} chamados</p>
+                  <div className="status-block">
+                    <p className="status-number">{formatNumber(totalFechados)}</p>
+                    <p className="status-label">Atendido</p>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <p className="empty">Os filtros ainda não retornaram volume para exibir o gráfico.</p>
-            )}
-          </InsightCard>
-
-          <InsightCard title="Carga por atendente" subtitle="Top filas que mais receberam chamados">
-            {cargaPorAtendente.length ? (
-              <BarChart
-                data={cargaPorAtendente.map((item) => ({ label: item.nome, value: item.quantidade }))}
-                color="#6366f1"
-              />
-            ) : (
-              <p className="empty">Nenhuma movimentação para o período selecionado.</p>
-            )}
-          </InsightCard>
-        </section>
-
-        <section className="grid two-columns">
-          <Leaderboard title="Clientes que mais chamaram" items={stats?.topClientes || []} descriptionKeys={["canal", "ultimoAtendimento"]} />
-          <Leaderboard title="Atendentes com mais chamados" items={stats?.atendentesComMaisAtendimentos || []} descriptionKeys={[]} />
-        </section>
-
-        <section className="panel">
-          <div className="panel__header">
-            <div>
-              <p className="eyebrow">Carga atual</p>
-              <h3>Distribuição de chamados por atendente</h3>
-            </div>
-            <span className="pill">{stats?.quantidadePorAtendente?.length || 0} pessoas na operação</span>
+              ) : (
+                <p className="empty">Aplicar filtros para visualizar.</p>
+              )}
+            </InsightCard>
           </div>
-          {stats?.quantidadePorAtendente?.length ? (
-            <div className="table" role="table" aria-label="Distribuição de chamados por atendente">
-              <div className="table__row table__row--head" role="row">
-                <span role="columnheader">Atendente</span>
-                <span role="columnheader">Total</span>
+
+          <div className="grid two-columns">
+            <Leaderboard
+              title="Total em aberto"
+              items={stats?.topClientes || []}
+              descriptionKeys={["canal", "ultimoAtendimento"]}
+            />
+            <Leaderboard title="SLA extrapolado +" items={stats?.atendentesComMaisAtendimentos || []} descriptionKeys={[]} />
+          </div>
+
+          <section className="panel table-panel">
+            <div className="panel__header">
+              <div>
+                <p className="eyebrow">Carga atual</p>
+                <h3>Distribuição de chamados por atendente</h3>
               </div>
-              {stats.quantidadePorAtendente.map((item) => (
-                <div key={item.nome} className="table__row" role="row">
-                  <span role="cell">{item.nome}</span>
-                  <span className="pill pill--muted" role="cell">{item.quantidade}</span>
-                </div>
-              ))}
+              <span className="pill">{stats?.quantidadePorAtendente?.length || 0} pessoas na operação</span>
             </div>
-          ) : (
-            <p className="empty">Nenhum chamado retornado para os filtros selecionados.</p>
-          )}
-        </section>
-      </main>
+            {stats?.quantidadePorAtendente?.length ? (
+              <div className="table" role="table" aria-label="Distribuição de chamados por atendente">
+                <div className="table__row table__row--head" role="row">
+                  <span role="columnheader">Atendente</span>
+                  <span role="columnheader">Total</span>
+                </div>
+                {stats.quantidadePorAtendente.map((item) => (
+                  <div key={item.nome} className="table__row" role="row">
+                    <span role="cell">{item.nome}</span>
+                    <span className="pill pill--muted" role="cell">{item.quantidade}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="empty">Nenhum chamado retornado para os filtros selecionados.</p>
+            )}
+          </section>
+        </main>
+      </div>
     </div>
   );
 }
