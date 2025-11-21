@@ -1,26 +1,31 @@
 import { useMemo, useState } from 'react';
-import FilterBar from './components/FilterBar';
 import { fetchDashboardStats } from './api';
+import DataPanel, { type PanelItem } from './components/DataPanel';
+import FilterBar from './components/FilterBar';
+import MetricCard from './components/MetricCard';
+import PageHeader from './components/PageHeader';
+import Sidebar from './components/Sidebar';
 import './index.css';
 import type { DashboardStats, FilterState } from './types';
-
-const formatNumber = (value: number | string | undefined | null) =>
-  typeof value === 'number' ? value.toLocaleString('pt-BR') : value || '--';
+import { formatDateISO, formatNumber } from './utils/formatters';
 
 function createDefaultFilters(): FilterState {
   const fim = new Date();
   const inicio = new Date();
   inicio.setDate(fim.getDate() - 6);
 
-  const formatDate = (date: Date) => date.toISOString().slice(0, 10);
-
   return {
-    dataInicio: formatDate(inicio),
-    dataFim: formatDate(fim),
+    dataInicio: formatDateISO(inicio),
+    dataFim: formatDateISO(fim),
     tags: '',
     status: ''
   };
 }
+
+const NAV_ACTIONS = [
+  { label: 'Limpar filtros', variant: 'ghost' as const },
+  { label: 'Aplicar filtros', variant: 'primary' as const }
+];
 
 function App() {
   const [filters, setFilters] = useState<FilterState>(createDefaultFilters);
@@ -41,6 +46,46 @@ function App() {
   const totalAbertos = stats?.resumo.totalAbertos ?? 0;
   const totalFechados = stats?.resumo.totalFechados ?? 0;
   const totalChamados = stats?.resumo.totalChamados ?? stats?.resumo.totalTickets ?? totalAbertos + totalFechados;
+
+  const statCards = [
+    {
+      label: 'Total no período',
+      value: formatNumber(totalChamados),
+      helper: 'Com base nas datas aplicadas',
+      tone: 'primary' as const
+    },
+    {
+      label: 'Abertos',
+      value: formatNumber(totalAbertos),
+      helper: 'Status aberto',
+      tone: 'success' as const
+    },
+    {
+      label: 'Fechados',
+      value: formatNumber(totalFechados),
+      helper: 'Status fechado',
+      tone: 'warning' as const
+    },
+    {
+      label: 'Atendentes listados',
+      value: formatNumber(stats?.quantidadePorAtendente?.length ?? 0),
+      helper: 'Sem limitação',
+      tone: 'neutral' as const
+    }
+  ];
+
+  const atendenteItems: PanelItem[] = (stats?.quantidadePorAtendente || []).map((item) => ({
+    id: item.nome,
+    title: item.nome,
+    value: formatNumber(item.quantidade)
+  }));
+
+  const clientesItems: PanelItem[] = (stats?.topClientes || []).map((item) => ({
+    id: item.nome,
+    title: item.nome,
+    subtitle: item.canal ? `Canal: ${item.canal}` : undefined,
+    value: formatNumber(item.quantidade)
+  }));
 
   const carregarDados = async () => {
     setLoading(true);
@@ -63,139 +108,68 @@ function App() {
     setError(null);
   };
 
+  const actionButtons = NAV_ACTIONS.map((action) => {
+    const isPrimary = action.variant === 'primary';
+    const onClick = isPrimary ? carregarDados : handleReset;
+
+    return (
+      <button
+        key={action.label}
+        className={`btn ${isPrimary ? 'btn--primary' : 'btn--ghost'}`}
+        onClick={onClick}
+        disabled={loading}
+        type="button"
+      >
+        {isPrimary ? (loading ? 'Atualizando...' : action.label) : action.label}
+      </button>
+    );
+  });
+
   return (
-    <div className="page">
-      <aside className="nav-drawer" aria-label="Menu principal">
-        <div className="brand-block">
-          <div className="brand-icon">GX</div>
-          <div>
-            <p className="brand-subtitle">CX Operações</p>
-            <h1>DASHBOARD GX CONSULTORIA</h1>
-          </div>
-        </div>
+    <div className="layout">
+      <Sidebar />
 
-        <nav className="nav-menu" aria-label="Navegação principal">
-          {["Dashboard", "Relatórios", "Atendimentos", "Configurações"].map((item, index) => (
-            <div key={item} className={`nav-item ${index === 0 ? 'is-active' : ''}`}>
-              <span className="nav-icon">{(index + 1).toString().padStart(2, '0')}</span>
-              <span>{item}</span>
-            </div>
-          ))}
-        </nav>
-
-        <div className="nav-secondary">
-          <strong>Profissional Tecnológico</strong>
-          <p>Slide bar à esquerda com navegação clara e foco na execução.</p>
-        </div>
-      </aside>
-
-      <div className="main">
-        <header className="topbar">
-          <div>
-            <p className="eyebrow">Dashboard</p>
-            <h2 className="page-title">Visão geral e resumo</h2>
-          </div>
-          <div className="top-actions">
-            <button className="btn outline" onClick={handleReset} disabled={loading}>
-              Limpar filtros
-            </button>
-            <button className="btn primary" onClick={carregarDados} disabled={loading}>
-              {loading ? 'Atualizando...' : 'Aplicar filtros'}
-            </button>
-          </div>
-        </header>
+      <div className="main" aria-busy={loading}>
+        <PageHeader title="Visão geral e resumo" subtitle="Dashboard" actions={actionButtons} />
 
         <section className="card filters-card">
           <div>
             <p className="eyebrow">Filtros de consulta</p>
-            <h3>Carregue dados somente ao aplicar o filtro</h3>
+            <h3 className="section-title">Carregue dados somente ao aplicar o filtro</h3>
           </div>
           <FilterBar filters={filters} onChange={setFilters} onSubmit={carregarDados} onReset={handleReset} loading={loading} />
         </section>
 
-        {error && <div className="alert error">{error}</div>}
+        {error && (
+          <div className="alert alert--error" role="status">
+            {error}
+          </div>
+        )}
 
-        <section className="stats-grid" aria-label="Resumo de atendimentos">
-          <article className="stat-card">
-            <p className="label">Total no período</p>
-            <h3>{formatNumber(totalChamados)}</h3>
-            <div className="stat-meta">
-              <span className="stat-pill">Últimos 7 dias</span>
-              <span>Datas aplicadas conforme filtro</span>
-            </div>
-          </article>
-          <article className="stat-card alt">
-            <p className="label">Abertos</p>
-            <h3>{formatNumber(totalAbertos)}</h3>
-            <div className="stat-meta">
-              <span className="stat-pill">Status aberto</span>
-            </div>
-          </article>
-          <article className="stat-card warning">
-            <p className="label">Fechados</p>
-            <h3>{formatNumber(totalFechados)}</h3>
-            <div className="stat-meta">
-              <span className="stat-pill">Status fechado</span>
-            </div>
-          </article>
-          <article className="stat-card alt">
-            <p className="label">Atendentes listados</p>
-            <h3>{formatNumber(stats?.quantidadePorAtendente?.length ?? 0)}</h3>
-            <div className="stat-meta">
-              <span className="stat-pill">Sem limitação</span>
-            </div>
-          </article>
+        <section className="stat-grid" aria-label="Resumo de atendimentos">
+          {statCards.map((card) => (
+            <MetricCard key={card.label} {...card} />
+          ))}
         </section>
 
         <section className="content-grid">
-          <article className="panel">
-            <div className="panel-header">
-              <div>
-                <p className="eyebrow">Equipe</p>
-                <h3>Total de atendimentos por atendente</h3>
-              </div>
-              <span className="metric-badge">Volume</span>
-            </div>
-            {stats?.quantidadePorAtendente?.length ? (
-              <ul className="list">
-                {stats.quantidadePorAtendente.map((item) => (
-                  <li key={item.nome} className="list-row">
-                    <div>
-                      <p className="row-title">{item.nome}</p>
-                    </div>
-                    <span className="metric-badge">{formatNumber(item.quantidade)}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty">Aplique um filtro para ver os atendentes com mais volume.</p>
-            )}
-          </article>
+          <DataPanel
+            title="Total de atendimentos por atendente"
+            eyebrow="Equipe"
+            badge="Volume"
+            items={atendenteItems}
+            loading={loading}
+            emptyMessage="Aplique um filtro para ver os atendentes com mais volume."
+          />
 
-          <article className="panel">
-            <div className="panel-header">
-              <div>
-                <p className="eyebrow">Contatos</p>
-                <h3>Contatos com mais atendimentos</h3>
-              </div>
-              <span className="metric-badge">Ranking</span>
-            </div>
-            {stats?.topClientes?.length ? (
-              <ul className="list">
-                {stats.topClientes.map((item) => (
-                  <li key={item.nome} className="list-row">
-                    <div>
-                      <p className="row-title">{item.nome}</p>
-                      {item.canal && <p className="row-subtitle">Canal: {item.canal}</p>}
-                    </div>
-                    <span className="metric-badge">{formatNumber(item.quantidade)}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty">Nenhum contato listado. Ajuste filtros e clique em aplicar.</p>
-            )}
-          </article>
+          <DataPanel
+            title="Contatos com mais atendimentos"
+            eyebrow="Contatos"
+            badge="Ranking"
+            items={clientesItems}
+            loading={loading}
+            emptyMessage="Nenhum contato listado. Ajuste filtros e clique em aplicar."
+          />
         </section>
       </div>
     </div>

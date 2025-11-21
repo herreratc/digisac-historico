@@ -69,10 +69,10 @@ function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: Fi
         </select>
       </div>
       <div className="filter-actions">
-        <button className="btn outline" onClick={onReset} disabled={loading}>
+        <button className="btn btn--ghost" onClick={onReset} disabled={loading} type="button">
           Limpar
         </button>
-        <button className="btn primary" onClick={onSubmit} disabled={loading}>
+        <button className="btn btn--primary" onClick={onSubmit} disabled={loading} type="button">
           {loading ? 'Atualizando...' : 'Aplicar filtros'}
         </button>
       </div>
