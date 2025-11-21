@@ -3,7 +3,6 @@ export type StatusFilter = '' | 'open' | 'closed';
 export interface FilterState {
   dataInicio: string;
   dataFim: string;
-  tags: string;
   status: StatusFilter;
 }
 
