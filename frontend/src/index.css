@@ -57,6 +57,10 @@ button {
   --sidebar-width: var(--sidebar-collapsed-width);
 }
 
+.layout--collapsed {
+  grid-template-columns: 96px 1fr;
+}
+
 .sidebar {
   background: radial-gradient(circle at 20% 20%, #1f2937, #0b1224);
   color: #e5e7eb;
@@ -78,6 +82,11 @@ button {
 
 .sidebar--expanded {
   padding-right: 26px;
+}
+
+.sidebar--collapsed {
+  padding: 22px 12px;
+  align-items: center;
 }
 
 .brand {
