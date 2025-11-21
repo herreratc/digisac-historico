@@ -46,6 +46,10 @@ button {
   background: #f6f7fb;
 }
 
+.layout--collapsed {
+  grid-template-columns: 96px 1fr;
+}
+
 .sidebar {
   background: radial-gradient(circle at 20% 20%, #1f2937, #0b1224);
   color: #e5e7eb;
@@ -56,11 +60,22 @@ button {
   border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.sidebar--collapsed {
+  padding: 22px 12px;
+  align-items: center;
+}
+
 .brand {
   display: grid;
-  grid-template-columns: 54px 1fr;
+  grid-template-columns: 54px 1fr auto;
   gap: 12px;
   align-items: center;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .brand__icon {
@@ -89,6 +104,29 @@ button {
   color: #f9fafb;
 }
 
+.sidebar__toggle {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #e5e7eb;
+  border-radius: 12px;
+  width: 38px;
+  height: 38px;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.sidebar--collapsed .brand__text,
+.sidebar--collapsed .sidebar__nav-label {
+  display: none;
+}
+
+.sidebar--collapsed .brand {
+  grid-template-columns: 54px auto;
+}
+
 .sidebar__nav {
   display: flex;
   flex-direction: column;
@@ -108,6 +146,10 @@ button {
   transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
 }
 
+.sidebar--collapsed .sidebar__nav-item {
+  justify-content: center;
+}
+
 .sidebar__nav-item:hover,
 .sidebar__nav-item.is-active {
   background: rgba(255, 255, 255, 0.04);
@@ -125,13 +167,6 @@ button {
   font-weight: 700;
   color: #c7d2fe;
   font-size: 14px;
-}
-
-.sidebar__note {
-  margin-top: auto;
-  font-size: 13px;
-  color: #9ca3af;
-  line-height: 1.4;
 }
 
 .main {
@@ -219,6 +254,24 @@ button {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
   align-items: end;
+}
+
+.filter-presets {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f3f4f6;
+  grid-column: 1 / -1;
+}
+
+.filter-presets__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .filter-field {

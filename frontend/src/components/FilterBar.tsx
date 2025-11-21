@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import { formatDateISO } from '../utils/formatters';
 import type { FilterState } from '../types';
 
 interface FilterBarProps {
@@ -15,8 +16,37 @@ function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: Fi
     onChange({ ...filters, [name]: value });
   };
 
+  const applyPreset = (days: number) => {
+    const end = new Date();
+    end.setDate(end.getDate() - 1);
+
+    const start = new Date(end);
+    start.setDate(end.getDate() - (days - 1));
+
+    onChange({
+      ...filters,
+      dataInicio: formatDateISO(start),
+      dataFim: formatDateISO(end)
+    });
+  };
+
   return (
     <div className="filter-bar" role="form" aria-label="Filtros do dashboard">
+      <div className="filter-presets" aria-label="Períodos rápidos">
+        <p className="filter-label">Períodos rápidos</p>
+        <div className="filter-presets__actions">
+          <button className="btn btn--ghost" type="button" onClick={() => applyPreset(1)} disabled={loading}>
+            Ontem
+          </button>
+          <button className="btn btn--ghost" type="button" onClick={() => applyPreset(7)} disabled={loading}>
+            Últimos 7 dias
+          </button>
+          <button className="btn btn--ghost" type="button" onClick={() => applyPreset(30)} disabled={loading}>
+            Últimos 30 dias
+          </button>
+        </div>
+      </div>
+
       <div className="filter-field">
         <label className="filter-label" htmlFor="dataInicio">
           Data início
@@ -43,19 +73,6 @@ function FilterBar({ filters, onChange, onSubmit, onReset, loading = false }: Fi
           value={filters.dataFim}
           onChange={handleInput}
           placeholder="Selecione a data final"
-        />
-      </div>
-      <div className="filter-field">
-        <label className="filter-label" htmlFor="tags">
-          Tags
-        </label>
-        <input
-          id="tags"
-          name="tags"
-          className="filter-input"
-          placeholder="Ex.: suporte, vip"
-          value={filters.tags}
-          onChange={handleInput}
         />
       </div>
       <div className="filter-field">

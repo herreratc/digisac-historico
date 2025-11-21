@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { fetchDashboardStats } from './api';
 import DataPanel, { type PanelItem } from './components/DataPanel';
 import FilterBar from './components/FilterBar';
@@ -11,13 +11,14 @@ import { formatDateISO, formatNumber } from './utils/formatters';
 
 function createDefaultFilters(): FilterState {
   const fim = new Date();
-  const inicio = new Date();
+  fim.setDate(fim.getDate() - 1);
+
+  const inicio = new Date(fim);
   inicio.setDate(fim.getDate() - 6);
 
   return {
     dataInicio: formatDateISO(inicio),
     dataFim: formatDateISO(fim),
-    tags: '',
     status: ''
   };
 }
@@ -28,6 +29,7 @@ const NAV_ACTIONS = [
 ];
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [filters, setFilters] = useState<FilterState>(createDefaultFilters);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(false);
@@ -83,7 +85,6 @@ function App() {
   const clientesItems: PanelItem[] = (stats?.topClientes || []).map((item) => ({
     id: item.nome,
     title: item.nome,
-    subtitle: item.canal ? `Canal: ${item.canal}` : undefined,
     value: formatNumber(item.quantidade)
   }));
 
@@ -108,6 +109,11 @@ function App() {
     setError(null);
   };
 
+  useEffect(() => {
+    carregarDados();
+    // Dados iniciais do período padrão
+  }, []);
+
   const actionButtons = NAV_ACTIONS.map((action) => {
     const isPrimary = action.variant === 'primary';
     const onClick = isPrimary ? carregarDados : handleReset;
@@ -126,8 +132,8 @@ function App() {
   });
 
   return (
-    <div className="layout">
-      <Sidebar />
+    <div className={`layout ${isSidebarOpen ? '' : 'layout--collapsed'}`}>
+      <Sidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen((open) => !open)} />
 
       <div className="main" aria-busy={loading}>
         <PageHeader title="Visão geral e resumo" subtitle="Dashboard" actions={actionButtons} />
