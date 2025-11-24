@@ -193,23 +193,33 @@ function calcularEstatisticasTickets(tickets) {
   const contagemAtendentes = new Map();
 
   tickets.forEach((ticket) => {
-    const cliente = normalizarNomeContato(ticket.contact);
+    const nomeCliente = normalizarNomeContato(ticket.contact);
+    const chaveCliente = ticket.contact?.id || nomeCliente;
     const atendente = ticket.user?.name || 'Sem atendente';
 
-    const ultimoAtendimento = contagemClientes.has(cliente)
+    const ultimoAtendimento = contagemClientes.has(chaveCliente)
       ? new Date(
           Math.max(
-            new Date(contagemClientes.get(cliente).ultimoAtendimento).getTime(),
+            new Date(contagemClientes.get(chaveCliente).ultimoAtendimento).getTime(),
             new Date(ticket.updatedAt).getTime()
           )
         ).toISOString()
       : ticket.updatedAt;
 
-    const atualCliente = contagemClientes.get(cliente) || { quantidade: 0, ultimoAtendimento: null, service: ticket.contact?.service?.name };
-    contagemClientes.set(cliente, {
+    const atualCliente =
+      contagemClientes.get(chaveCliente) ||
+      {
+        quantidade: 0,
+        ultimoAtendimento: null,
+        service: ticket.contact?.service?.name,
+        nome: nomeCliente
+      };
+
+    contagemClientes.set(chaveCliente, {
       quantidade: atualCliente.quantidade + 1,
       ultimoAtendimento,
-      service: atualCliente.service || ticket.contact?.service?.name
+      service: atualCliente.service || ticket.contact?.service?.name,
+      nome: atualCliente.nome || nomeCliente
     });
 
     const atualAtendente = contagemAtendentes.get(atendente) || 0;
@@ -217,7 +227,7 @@ function calcularEstatisticasTickets(tickets) {
   });
 
   const rankingClientes = Array.from(contagemClientes.entries())
-    .map(([nome, info]) => ({ nome, quantidade: info.quantidade, ultimoAtendimento: info.ultimoAtendimento, canal: info.service }))
+    .map(([_, info]) => ({ nome: info.nome, quantidade: info.quantidade, ultimoAtendimento: info.ultimoAtendimento, canal: info.service }))
     .sort((a, b) => b.quantidade - a.quantidade);
 
   const rankingAtendentes = Array.from(contagemAtendentes.entries())
