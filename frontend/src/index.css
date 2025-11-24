@@ -377,6 +377,149 @@ button {
   border: 1px solid #fecdd3;
 }
 
+.network-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 18px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.network-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.network-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.network-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.summary-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.network-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.network-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.network-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.network-card__count {
+  display: grid;
+  text-align: right;
+  gap: 4px;
+}
+
+.network-card__count strong {
+  font-size: 24px;
+}
+
+.network-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.network-card__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.network-card__list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.network-card__contact-name {
+  font-weight: 600;
+}
+
+.network-card__channels {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.network-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.network-card__meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #eef2ff;
+  color: #4338ca;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid #e0e7ff;
+}
+
+.pill--muted {
+  background: #f3f4f6;
+  color: #374151;
+  border-color: #e5e7eb;
+}
+
+@media (max-width: 768px) {
+  .network-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .network-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

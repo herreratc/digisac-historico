@@ -150,6 +150,56 @@ async function buscarTickets({ dataInicio, dataFim, serviceId, page = 1, perPage
   return resposta.json();
 }
 
+async function buscarContatos({ page = 1, perPage = 200 }) {
+  const query = {
+    include: [
+      {
+        model: 'tags',
+        attributes: ['id', 'name'],
+        through: { attributes: [] },
+        required: true
+      },
+      { model: 'service', attributes: ['id', 'name'] }
+    ],
+    where: { visible: true },
+    page,
+    perPage
+  };
+
+  const qs = buildQueryParam(query);
+  const resposta = await executarRequisicao(withPrefix(`/contacts?${qs}`));
+  return resposta.json();
+}
+
+async function buscarContatosComTagsAteCompletar(filtros) {
+  const todosOsContatos = [];
+  let pagina = 1;
+  const pageSize = filtros.perPage || 200;
+
+  while (true) {
+    const resultado = await buscarContatos({ ...filtros, page: pagina, perPage: pageSize });
+    const registros = resultado.data || resultado || [];
+    const total = resultado.meta?.total;
+
+    if (registros.length === 0) {
+      break;
+    }
+
+    todosOsContatos.push(...registros);
+
+    if ((total && todosOsContatos.length >= total) || registros.length < pageSize) {
+      break;
+    }
+
+    pagina += 1;
+    if (pagina > 100) {
+      break;
+    }
+  }
+
+  return todosOsContatos;
+}
+
 async function buscarTicketsAteCompletar(filtros) {
   const todosOsTickets = [];
   let pagina = 1;
@@ -182,6 +232,52 @@ async function buscarTicketsAteCompletar(filtros) {
 
 function normalizarNomeContato(contato) {
   return contato?.name || contato?.alternativeName || contato?.internalName || 'Contato sem nome';
+}
+
+function calcularRedeClientesPorTag(contatos, maxExemplos = 5) {
+  const mapaTags = new Map();
+
+  contatos.forEach((contato) => {
+    const nome = normalizarNomeContato(contato);
+    const canal = contato.service?.name;
+
+    (contato.tags || []).forEach((tag) => {
+      const tagAtual = mapaTags.get(tag.name) || {
+        tag: tag.name,
+        quantidade: 0,
+        exemplos: [],
+        canais: new Set()
+      };
+
+      tagAtual.quantidade += 1;
+      if (canal) {
+        tagAtual.canais.add(canal);
+      }
+
+      if (tagAtual.exemplos.length < maxExemplos) {
+        tagAtual.exemplos.push({
+          id: contato.id,
+          nome,
+          canal
+        });
+      }
+
+      mapaTags.set(tag.name, tagAtual);
+    });
+  });
+
+  const grupos = Array.from(mapaTags.values())
+    .map((grupo) => ({
+      ...grupo,
+      canais: Array.from(grupo.canais).sort()
+    }))
+    .sort((a, b) => b.quantidade - a.quantidade);
+
+  return {
+    totalContatos: contatos.length,
+    totalTags: grupos.length,
+    tags: grupos
+  };
 }
 
 function calcularEstatisticasTickets(tickets) {
@@ -262,8 +358,20 @@ async function obterEstatisticasTickets(filtros) {
   };
 }
 
+async function obterRedeClientes({ perPage, maxExemplos = 5 }) {
+  const contatos = await buscarContatosComTagsAteCompletar({ perPage });
+  const rede = calcularRedeClientesPorTag(contatos, maxExemplos);
+
+  return {
+    filtros: { perPage, maxExemplos },
+    totalRegistrosProcessados: contatos.length,
+    ...rede
+  };
+}
+
 module.exports = {
   listarCampanhas,
   exportarResultadosCampanha,
-  obterEstatisticasTickets
+  obterEstatisticasTickets,
+  obterRedeClientes
 };
