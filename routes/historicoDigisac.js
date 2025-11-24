@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { listarCampanhas, exportarResultadosCampanha, obterEstatisticasTickets } = require('../services/digisacService');
+const {
+  listarCampanhas,
+  exportarResultadosCampanha,
+  obterEstatisticasTickets,
+  obterRedeClientes
+} = require('../services/digisacService');
 const { parse } = require('csv-parse/sync');
 
 router.get('/', async (req, res) => {
@@ -81,6 +86,22 @@ router.get('/tickets/estatisticas', async (req, res) => {
     });
 
     res.json(estatisticas);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: true, mensagem: err.message });
+  }
+});
+
+router.get('/rede-clientes', async (req, res) => {
+  try {
+    const { perPage, maxExemplos } = req.query;
+
+    const rede = await obterRedeClientes({
+      perPage: Number(perPage) || 200,
+      maxExemplos: Number(maxExemplos) || 5
+    });
+
+    res.json(rede);
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: true, mensagem: err.message });

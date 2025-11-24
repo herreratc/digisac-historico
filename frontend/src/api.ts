@@ -1,4 +1,4 @@
-import type { DashboardStats, FilterState } from './types';
+import type { ClientNetwork, DashboardStats, FilterState } from './types';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -25,6 +25,18 @@ export async function fetchDashboardStats(params: Partial<FilterState & { perPag
   if (!response.ok) {
     const texto = await response.text();
     throw new Error(`Erro ao buscar estatísticas: ${response.status} - ${texto}`);
+  }
+
+  return response.json();
+}
+
+export async function fetchClientNetwork(): Promise<ClientNetwork> {
+  const url = `${API_URL}/historico-digisac/rede-clientes`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const texto = await response.text();
+    throw new Error(`Erro ao buscar rede de clientes: ${response.status} - ${texto}`);
   }
 
   return response.json();
