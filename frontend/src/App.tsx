@@ -35,6 +35,7 @@ function App() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const isSidebarExpanded = isSidebarPinned || isSidebarHovered;
 
@@ -91,6 +92,13 @@ function App() {
     value: formatNumber(item.quantidade)
   }));
 
+  const filtrosAtivos = (filters.status ? 1 : 0) + (filters.dataInicio && filters.dataFim ? 1 : 0);
+  const dataRangeLabel = filters.dataInicio && filters.dataFim ? `De ${filters.dataInicio} até ${filters.dataFim}` : 'Selecione um período';
+  const statusLabel = filters.status === 'open' ? 'Somente abertos' : filters.status === 'closed' ? 'Somente fechados' : 'Todos os status';
+  const ultimaAtualizacao = lastUpdated
+    ? new Date(lastUpdated).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
+    : 'Aguardando coleta';
+
   const carregarDados = async () => {
     setLoading(true);
     setError(null);
@@ -98,6 +106,7 @@ function App() {
     try {
       const data = await fetchDashboardStats(filtrosFormatados);
       setStats(data);
+      setLastUpdated(new Date().toISOString());
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro inesperado ao buscar estatísticas';
       setError(message);
@@ -145,6 +154,30 @@ function App() {
 
       <div className="main" aria-busy={loading}>
         <PageHeader title="Visão geral e resumo" subtitle="Dashboard" actions={actionButtons} />
+
+        <section className="status-bar" aria-label="Indicadores de contexto">
+          <div className="status-pill status-pill--live">
+            <span className="pulse" aria-hidden />
+            <div>
+              <p className="pill-label">Monitoramento</p>
+              <strong>{ultimaAtualizacao}</strong>
+            </div>
+          </div>
+          <div className="status-pill">
+            <div>
+              <p className="pill-label">Janela de análise</p>
+              <strong>{dataRangeLabel}</strong>
+            </div>
+            <span className="pill-meta">{statusLabel}</span>
+          </div>
+          <div className="status-pill status-pill--ghost">
+            <div>
+              <p className="pill-label">Filtros ativos</p>
+              <strong>{filtrosAtivos} aplicados</strong>
+            </div>
+            <span className="pill-meta">Dados atualizam sob demanda</span>
+          </div>
+        </section>
 
         <section className="card filters-card">
           <div>
